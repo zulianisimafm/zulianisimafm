@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zulianisima 100.3 FM ¡tan zuliana como vos! </title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <!-- FontAwesome para Iconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --azul-fondo: #0d0c7c;
+            --azul-electrico: #08074e;
+            --azul-consola: #0f0e6a;
+            --amarillo-branding: #f7e300;
+            --blanco: #ffffff;
+            --texto-muted: #7b8fa8;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        /* Fuerza a que el body ocupe exactamente la pantalla sin scroll */
+        body {
+            background-color: var(--azul-fondo);
+            color: var(--blanco);
+            height: 100vh;
+            height: 100dvh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 15px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Vectores angulares de fondo decorativos inspirados en tu imagen */
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 200px;
+            height: 100px;
+            border-left: 3px solid var(--amarillo-branding);
+            border-bottom: 3px solid var(--amarillo-branding);
+            transform: skewX(-45deg) translateX(-80px) translateY(-30px);
+            opacity: 0.5;
+            pointer-events: none;
+        }
+
+        body::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 250px;
+            height: 120px;
+            border-right: 3px solid var(--amarillo-branding);
+            border-top: 3px solid var(--azul-electrico);
+            transform: skewX(-35deg) translateX(80px) translateY(30px);
+            opacity: 0.4;
+            pointer-events: none;
+        }
+
+        /* Estructura general de la aplicación */
+        .app-layout {
+            width: 100%;
+            max-width: 1100px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            gap: 15px;
+            position: relative;
+            z-index: 10;
+        }
+
+        /* LOGO SUPERIOR */
+        .header-logo {
+            text-align: center;
+            flex-shrink: 0;
+        }
+
+        .header-logo img {
+            max-height: 250px;
+            width: auto;
+            filter: drop-shadow(0 6px 15px rgba(0, 38, 230, 0.4));
+        }
+
+        /* --- CONTENEDOR SPLIT (DOS COLUMNAS EN PC, UNA EN MÓVIL) --- */
+        .dashboard-content {
+            display: grid;
+            grid-template-columns: 1fr 1.1fr;
+            gap: 20px;
+            flex-grow: 1;
+            min-height: 0; /* Permite que los contenedores hijos hereden el scroll interno si es necesario */
+        }
+
+        /* --- SECCIÓN REPRODUCTOR --- */
+        .vertical-player-card {
+            background: linear-gradient(180deg, var(--azul-consola), #020718);
+            border: 2px solid var(--azul-electrico);
+            border-radius: 20px;
+            padding: 0px;
+            text-align: center;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around; /* Distribuye el contenido verticalmente de forma equitativa */
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .avatar-container {
+            position: relative;
+            width: 160px;
+            height: 160px;
+        }
+
+        .avatar-main {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 2px solid var(--blanco);
+            box-shadow: 0 10px 30px rgba(0, 38, 230, 0.3);
+        }
+
+        .live-badge {
+            position: absolute;
+            top: 0;
+            right: 0;
+            background: #ff0044;
+            color: var(--blanco);
+            font-size: 0.65rem;
+            font-weight: 900;
+            padding: 4px 8px;
+            border-radius: 4px;
+            text-transform: uppercase;
+            box-shadow: 0 4px 10px rgba(255, 0, 68, 0.4);
+        }
+
+        .info-container h2 {
+            font-size: 1.5rem;
+            font-weight: 900;
+            margin-bottom: 1px;
+            letter-spacing: -0.5px;
+            line-height: 1.2;
+        }
+
+        .info-container p {
+            color: var(--amarillo-branding);
+            font-size: 0.95rem;
+            font-weight: 700;
+        }
+
+        /* Caja del Espectro VU-Meter Integrado */
+        .interactive-footer {
+            position: relative;
+            width: 100%;
+            height: 90px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 4, 15, 0.8);
+            border-radius: 80px;
+            overflow: hidden;
+            border: 1px solid rgba(0, 38, 230, 0.2);
+        }
+
+        .interactive-footer canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .circle-play-btn {
+            position: relative;
+            z-index: 5;
+            background: var(--amarillo-branding);
+            color: #000;
+            border: none;
+            width: 58px;
+            height: 58px;
+            border-radius: 50%;
+            font-size: 1.2rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 6px 15px rgba(247, 227, 0, 0.4);
+            transition: all 0.25s ease;
+        }
+
+        .circle-play-btn:hover {
+            transform: scale(1.06);
+            background: var(--blanco);
+        }
+
+        /* --- SECCIÓN PROGRAMACIÓN COMPACTA --- */
+        .timeline-section {
+            background: rgba(5, 17, 54, 0.4);
+            border: 1px solid rgba(0, 38, 230, 0.15);
+            border-radius: 20px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            min-height: 0;
+        }
+
+        .tabs-container {
+            display: flex;
+            gap: 10px;
+            border-bottom: 2px solid rgba(0, 38, 230, 0.2);
+            padding-bottom: 8px;
+            flex-shrink: 0;
+        }
+
+        .tab-btn {
+            flex: 1;
+            background: none;
+            border: none;
+            color: var(--texto-muted);
+            font-size: 0.8rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            padding: 6px 0;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .tab-btn.active {
+            color: var(--amarillo-branding);
+        }
+
+        .tab-btn.active::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: var(--amarillo-branding);
+        }
+
+        /* Listas de reproducción dinámicas con scroll interno si desbordan */
+        .playlist-wrapper {
+            display: none;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 15px;
+            overflow-y: auto;
+            flex-grow: 1;
+            padding-right: 4px;
+        }
+
+        .playlist-wrapper.active {
+            display: flex;
+        }
+
+        /* Scrollbar personalizado estético */
+        .playlist-wrapper::-webkit-scrollbar {
+            width: 4px;
+        }
+        .playlist-wrapper::-webkit-scrollbar-thumb {
+            background: var(--azul-electrico);
+            border-radius: 2px;
+        }
+
+        .program-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 14px;
+            border-radius: 10px;
+            background: rgba(0, 0, 0, 0.15);
+            flex-shrink: 0; /* Evita que las filas se aplasten */
+        }
+
+        .program-row.active {
+            background: var(--azul-consola);
+            border-left: 4px solid var(--amarillo-branding);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .row-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .row-avatar {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .row-details h4 {
+            font-size: 0.95rem;
+            font-weight: 700;
+        }
+
+        .row-details p {
+            font-size: 0.8rem;
+            color: var(--texto-muted);
+        }
+
+        .program-row.active .row-details p {
+            color: var(--amarillo-branding);
+        }
+
+        .row-time {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--texto-muted);
+            background: rgba(255,255,255,0.04);
+            padding: 4px 8px;
+            border-radius: 4px;
+        }
+
+        .program-row.active .row-time {
+            background: var(--amarillo-branding);
+            color: #000;
+        }
+
+        /* FOOTER DE LA APP */
+        footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.75rem;
+            color: var(--texto-muted);
+            flex-shrink: 0;
+            padding-top: 5px;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .socials a {
+            color: var(--blanco);
+            margin-left: 12px;
+            font-size: 0.95rem;
+            transition: color 0.2s;
+        }
+
+        .socials a:hover {
+            color: var(--amarillo-branding);
+        }
+
+        /* --- RESPONSIVO ADAPTATIVO PARA MÓVILES (PANTALLA COMPLETA TOTAL) --- */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            .app-layout {
+                gap: 10px;
+            }
+
+            .header-logo img {
+                max-height: 120px;
+            }
+
+            /* Convierte la grilla en un bloque vertical que se ajusta exactamente */
+            .dashboard-content {
+                grid-template-columns: 1fr;
+                grid-template-rows: 1.1fr 1fr;
+                gap: 12px;
+                min-height: 0;
+            }
+
+            .vertical-player-card {
+                padding: 5px;
+            }
+
+            .avatar-container {
+                width: 100px;
+                height: 100px;
+            }
+
+            .info-container h2 {
+                font-size: 1.25rem;
+            }
+
+            .interactive-footer {
+                height: 70px;
+            }
+
+            .circle-play-btn {
+                width: 44px;
+                height: 44px;
+                font-size: 1rem;
+            }
+
+            .timeline-section {
+                padding: 12px;
+            }
+
+            .program-row {
+                padding: 8px 12px;
+            }
+
+            .row-avatar {
+                width: 52px;
+                height: 52px;
+            }
+
+            .row-details h4 {
+                font-size: 0.85rem;
+            }
+        }
+
+        /* Soporte para teléfonos muy pequeños (ajuste de seguridad) */
+        @media (max-height: 600px) {
+            .avatar-container { display: none; } /* Oculta la foto para dar prioridad a los controles y textos */
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app-layout">
+        <!-- Encabezado de Marca -->
+        <div class="header-logo">
+            <img src="http://imgfz.com/i/cTRX9tY.png" alt="Zulianísima 100.3 FM">
+        </div>
+
+        <!-- Dashboard Todo en Uno -->
+        <div class="dashboard-content">
+            
+            <!-- Izquierda: Consola de Audio -->
+            <section class="vertical-player-card">
+                <div class="avatar-container">
+                    <img id="currentLocutorPhoto" src="logo.jpg" alt="Locutor al aire" class="avatar-main">
+                    <div class="live-badge">Al AIRE</div>
+                </div>
+
+                <div class="info-container">
+                    <h2 id="currentShowTitle">Sintonizando...</h2>
+                    <p id="currentHost">Zulianísima 100.3 FM</p>
+                </div>
+
+                <div class="interactive-footer">
+                    <canvas id="vuMeterVisualizer"></canvas>
+                    <button class="circle-play-btn" id="playBtn" onclick="togglePlayback()">
+                        <i class="fas fa-play" id="playIcon"></i>
+                    </button>
+                </div>
+
+                <audio id="radioStream" src="https://stream-177.surfernetwork.com/m7z6zdlqlrkuv" crossorigin="anonymous"></audio>
+            </section>
+
+            <!-- Derecha: Parrilla de Programación Inteligente -->
+            <section class="timeline-section">
+                <div class="tabs-container">
+                    <button class="tab-btn" id="btn-semana" onclick="switchTab('semana')">Lunes a Viernes</button>
+                    <button class="tab-btn" id="btn-finde" onclick="switchTab('finde')">Fin de Semana</button>
+                </div>
+
+                <!-- LUNES A VIERNES -->
+                <div class="playlist-wrapper" id="wrapper-semana">
+                    <div class="program-row" id="card-amaneciendo">
+                        <div class="row-left">
+                            <img src="" class="row-avatar">
+                            <div class="row-details">
+                                <h4>Amaneciendo con Dios</h4>
+                                <p></p>
+                            </div>
+                        </div>
+                        <span class="row-time">05:00 AM</span>
+                    </div>
+                    <div class="program-row" id="card-mananero">
+                        <div class="row-left">
+                            <img src="" class="row-avatar">
+                            <div class="row-details">
+                                <h4>Cabimas en sintonia</h4>
+                                <p>con Freddy Gomez</p>
+                            </div>
+                        </div>
+                        <span class="row-time">07:00 AM</span>
+                    </div>
+                    <div class="program-row" id="card-gaitas">
+                        <div class="row-left">
+                            <img src="" class="row-avatar">
+                            <div class="row-details">
+                                <h4>Las 100 Gaitas</h4>
+                                <p>Zulianisimas</p>
+                            </div>
+                        </div>
+                        <span class="row-time">8:00 AM</span>
+                    </div>
+                    <div class="program-row" id="card-manana">
+                        <div class="row-left">
+                            <img src="" class="row-avatar">
+                            <div class="row-details">
+                                <h4>La Mañana Zuliana</h4>
+                                <p>con Israel Cordero</p>
+                            </div>
+                        </div>
+                        <span class="row-time">10:00 AM</span>
+                    </div>
+                    <div class="program-row" id="card-noticia">
+                        <div class="row-left">
+                            <img src="" class="row-avatar">
+                            <div class="row-details">
+                                <h4>XQ`es noticia</h4>
+                                <p>Claro y Raspao</p>
+                            </div>
+                        </div>
+                        <span class="row-time">12:00 PM</span>
+                    </div>
+                    <div class="program-row" id="card-frente">
+                        <div class="row-left">
+                            <img src="" class="row-avatar">
+                            <div class="row-details">
+                                <h4>Especiales</h4>
+                                <p>Frente a Frente</p>
+                            </div>
+                        </div>
+                        <span class="row-time">1:00 PM</span>
+                    </div>
+                    <div class="program-row" id="card-guaguanco">
+                        <div class="row-left">
+                            <img src="" class="row-avatar">
+                            <div class="row-details">
+                                <h4>El Guaguanco del Chepon</h4>
+                                <p>con Albenis Barroso</p>
+                            </div>
+                        </div>
+                        <span class="row-time">4:00 PM</span>
+                    </div>
+                     <div class="program-row" id="card-papacho">
+                        <div class="row-left">
+                            <img src="" class="row-avatar">
+                            <div class="row-details">
+                                <h4>El Show del Papacho</h4>
+                                <p>con Manuel Rojas</p>
+                            </div>
+                        </div>
+                        <span class="row-time">6:00 PM</span>
+                    </div>
+                </div>
+
+                <!-- FIN DE SEMANA -->
+                <div class="playlist-wrapper" id="wrapper-finde">
+                    <div class="program-row" id="card-palabra">
+                        <div class="row-left">
+                            <img src="" class="row-avatar">
+                            <div class="row-details">
+                                <h4>Palabra de Gracia</h4>
+                                <p></p>
+                            </div>
+                        </div>
+                        <span class="row-time">06:00 AM</span>
+                    </div>
+                    <div class="program-row" id="card-cafe">
+                        <div class="row-left">
+                            <img src="" class="row-avatar">
+                            <div class="row-details">
+                                <h4>Café con Llano</h4>
+                                <p>con Gladys Garcés</p>
+                            </div>
+                        </div>
+                        <span class="row-time">8:00 AM</span>
+                    </div>
+                    <div class="program-row" id="card-bailando">
+                        <div class="row-left">
+                            <img src="" class="row-avatar">
+                            <div class="row-details">
+                                <h4>Bailando con Jesus y Geonardo</h4>
+                                <p>Con Jesus Castellanos y Geonardo Garces</p>
+                            </div>
+                        </div>
+                        <span class="row-time">10:00 AM</span>
+                    </div>
+                    <div class="program-row" id="card-provecho">
+                        <div class="row-left">
+                            <img src="" class="row-avatar">
+                            <div class="row-details">
+                                <h4>Buen Provecho Musical</h4>
+                                <p>Con Jorge Acosta</p>
+                            </div>
+                        </div>
+                        <span class="row-time">12:00 PM</span>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+
+        <!-- Footer Reducido -->
+        <footer>
+            <p>&copy; 2026 Zulianísima FM- powered by ACMEDIA</p>
+            <div class="socials">
+                <a href="#"><i class="fab fa-instagram"></i></a>
+                <a href="#"><i class="fab fa-facebook-f"></i></a>
+                <a href="#"><i class="fab fa-whatsapp"></i></a>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        const progSemana = [
+            { id: "card-amaneciendo", inicio: 4, fin: 7, titulo: "Amaneciendo con Dios", locutor: "", foto: "https://images.unsplash.com/photo-1617610881975-8e524774ab45?q=80&w=870&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" },
+            { id: "card-mananero", inicio: 7, fin: 8, titulo: "Cabimas en sintonía", locutor: "Con Freddy Gomez", foto: "https://scontent.fccs3-1.fna.fbcdn.net/v/t39.30808-6/679774385_10242060138221140_2834514087338517829_n.jpg?stp=dst-jpg_tt6&cstp=mx688x688&ctp=s688x688&_nc_cat=105&ccb=1-7&_nc_sid=a5f93a&_nc_ohc=aa9O2_WBEf8Q7kNvwGVFFD8&_nc_oc=Adrtqp7cJnn-r7nlsqGBlyj0gFrcdfKPbml6blSE-J7ixJMVNeUAbVd7PrQBPthaKLE&_nc_zt=23&_nc_ht=scontent.fccs3-1.fna&_nc_gid=6Rb5IvWpD1b4wRKMFPpdmg&_nc_ss=7b289&oh=00_AQBMDFdBPw1439WC90E5KPTUHs_0IYTKKDNPyTJky3WImA&oe=6A54924D" },
+            { id: "card-gaitas", inicio: 8, fin: 10, titulo: "Las 100 Gaitas", locutor: "Zulianisimas'", foto: "http://imgfz.com/i/t4hqxlf.jpeg" },
+              { id: "card-manana", inicio: 10, fin: 12, titulo: "La Mañana Zuliana", locutor: "con Israel Cordero'", foto: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=150" },
+                { id: "card-noticia", inicio: 12, fin: 13, titulo: "XQ`es noticia", locutor: "emisión meridiana'", foto: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRZVmfsspRQbVDa_YvWl4gDeHgFyVDn6L-c85Rku94W7w&s=100" },
+                  { id: "card-frente", inicio: 13, fin: 14, titulo: "Especiales", locutor: "Frente a Frente", foto: "http://imgfz.com/i/xmNa9bO.jpeg" },
+                  { id: "card-guaguanco", inicio: 14, fin: 18, titulo: "El Guaguanco del Chepon", locutor: "con Albenis Barroso", foto: "http://imgfz.com/i/xosZkKw.jpeg" },
+                  { id: "card-papacho", inicio: 18, fin: 20, titulo: "El Show del Papacho", locutor: "con Manuel Rojas", foto: "http://imgfz.com/i/sS2jguN.jpeg" }
+        ];
+
+        const progFinde = [
+            { id: "card-palabra", inicio: 6, fin: 7, titulo: "Palabra de Gracia", locutor: "", foto: "https://i.scdn.co/image/ab6765630000ba8a29c0c858645ae9685fb45f55" },
+            { id: "card-cafe", inicio: 8, fin: 10, titulo: "Café con Llano", locutor: "con Gladys Garcés", foto: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=150" },
+            { id: "card-bailando", inicio: 10, fin: 12, titulo: "Bailando con Jesus y Geo", locutor: "Con Jesus castellano y Geonardo Garces", foto: "http://imgfz.com/i/Jbs31CB.jpeg" },
+             { id: "card-provecho", inicio: 12, fin: 2, titulo: "Buen Provecho Musical", locutor: "Con Jorge Acosta", foto: "http://imgfz.com/i/q8RIm90.jpeg" }
+        ];
+
+        const porDefecto = { id: null, titulo: "Zulianísima 100.3 FM", locutor: "PROGRAMACION 24/7", foto: "http://imgfz.com/i/EaFrZU1.jpeg" };
+
+        progSemana.forEach(p => document.getElementById(p.id).querySelector('.row-avatar').src = p.foto);
+        progFinde.forEach(p => document.getElementById(p.id).querySelector('.row-avatar').src = p.foto);
+
+        function switchTab(type) {
+            document.getElementById('btn-semana').classList.remove('active');
+            document.getElementById('btn-finde').classList.remove('active');
+            document.getElementById('wrapper-semana').classList.remove('active');
+            document.getElementById('wrapper-finde').classList.remove('active');
+
+            if (type === 'semana') {
+                document.getElementById('btn-semana').classList.add('active');
+                document.getElementById('wrapper-semana').classList.add('active');
+            } else {
+                document.getElementById('btn-finde').classList.add('active');
+                document.getElementById('wrapper-finde').classList.add('active');
+            }
+        }
+
+        function sincronizarEmisora() {
+            const ahora = new Date();
+            const horaActual = ahora.getHours();
+            const diaSemana = ahora.getDay();
+            
+            const esFinDeSemana = (diaSemana === 0 || diaSemana === 6);
+            const parrillaActiva = esFinDeSemana ? progFinde : progSemana;
+            
+            if (!window.tabIniciada) {
+                switchTab(esFinDeSemana ? 'finde' : 'semana');
+                window.tabIniciada = true;
+            }
+
+            progSemana.forEach(p => document.getElementById(p.id).classList.remove('active'));
+            progFinde.forEach(p => document.getElementById(p.id).classList.remove('active'));
+
+            let programaActual = porDefecto;
+
+            parrillaActiva.forEach(p => {
+                if (horaActual >= p.inicio && horaActual < p.fin) {
+                    programaActual = p;
+                    document.getElementById(p.id).classList.add('active');
+                }
+            });
+
+            document.getElementById('currentShowTitle').innerText = programaActual.titulo;
+            document.getElementById('currentHost').innerText = programaActual.locutor;
+            document.getElementById('currentLocutorPhoto').src = programaActual.foto;
+        }
+
+        sincronizarEmisora();
+        setInterval(sincronizarEmisora, 30000);
+
+        // --- ECO REGULADOR VU-METER ---
+        const audio = document.getElementById('radioStream');
+        const playIcon = document.getElementById('playIcon');
+        const canvas = document.getElementById('vuMeterVisualizer');
+        const canvasCtx = canvas.getContext('2d');
+
+        let audioCtx, audioSource, analyser, dataArray, bufferLength;
+        let isInit = false;
+
+        function resizeCanvas() {
+            canvas.width = canvas.parentElement.clientWidth;
+            canvas.height = canvas.parentElement.clientHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        function initAudio() {
+            if (isInit) return;
+            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            analyser = audioCtx.createAnalyser();
+            audioSource = audioCtx.createMediaElementSource(audio);
+            audioSource.connect(analyser);
+            analyser.connect(audioCtx.destination);
+            analyser.fftSize = 32; 
+            bufferLength = analyser.frequencyBinCount;
+            dataArray = new Uint8Array(bufferLength);
+            isInit = true;
+        }
+
+        function renderVUMeter() {
+            requestAnimationFrame(renderVUMeter);
+            canvasCtx.clearRect(0, 0, canvas.width, canvas.height);
+
+            if (!isInit || audio.paused) {
+                const barWidth = 6;
+                const barGap = 4;
+                const totalBars = 14;
+                const startX = (canvas.width - (totalBars * (barWidth + barGap))) / 2;
+                for(let i=0; i < totalBars; i++) {
+                    canvasCtx.fillStyle = 'rgba(0, 38, 230, 0.15)';
+                    canvasCtx.fillRect(startX + i * (barWidth + barGap), canvas.height - 10, barWidth, 3);
+                }
+                return;
+            }
+
+            analyser.getByteFrequencyData(dataArray);
+
+            const barWidth = 6;
+            const barGap = 4;
+            const totalBars = bufferLength - 2; 
+            const startX = (canvas.width - (totalBars * (barWidth + barGap))) / 2;
+
+            for (let i = 0; i < totalBars; i++) {
+                const value = dataArray[i];
+                const percent = value / 255;
+                const barHeight = percent * canvas.height * 0.82;
+
+                const x = startX + i * (barWidth + barGap);
+                const y = canvas.height - barHeight - 4;
+
+                let gradient = canvasCtx.createLinearGradient(x, canvas.height, x, y);
+                gradient.addColorStop(0, '#f7e300');    
+                gradient.addColorStop(0.7, '#f7e300');  
+                gradient.addColorStop(1, '#0026e6');    
+
+                canvasCtx.fillStyle = gradient;
+                if(barHeight > 0) {
+                    canvasCtx.fillRect(x, y, barWidth, barHeight);
+                }
+            }
+        }
+
+        renderVUMeter();
+
+        function togglePlayback() {
+            initAudio();
+            if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+
+            if (audio.paused) {
+                audio.load();
+                audio.play().then(() => {
+                    playIcon.className = 'fas fa-pause';
+                }).catch(err => console.log("Streaming Error"));
+            } else {
+                audio.pause();
+                playIcon.className = 'fas fa-play';
+            }
+        }
+    </script>
+</body>
+</html>

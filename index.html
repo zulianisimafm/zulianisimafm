@@ -3,16 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Zulianisima 100.3 FM ¡tan zuliana como vos! </title>
-    <link rel="icon" href="http://imgfz.com/i/tHlpuLM.png" type="image/png">
-    <!-- Google Fonts -->
+    <title>ZulianIsima FM</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&display=swap" rel="stylesheet">
-    <!-- FontAwesome para Iconos -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
         :root {
-            --azul-fondo: #0d0c7c;
+         --azul-fondo: #0d0c7c;
             --azul-electrico: #08074e;
             --azul-consola: #0f0e6a;
             --amarillo-branding: #f7e300;
@@ -27,193 +24,246 @@
             font-family: 'Montserrat', sans-serif;
         }
 
-        /* Fuerza a que el body ocupe exactamente la pantalla sin scroll */
-        body {
-            background-color: var(--azul-fondo);
-            color: var(--blanco);
-            height: 100vh;
-            height: 100dvh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 15px;
-            overflow: hidden;
-            position: relative;
+       body {
+    background-color: var(--azul-fondo);
+    color: var(--blanco);
+    height: 100vh;
+    height: 100dvh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px; /* Padding reducido para ganar espacio real */
+    overflow: hidden;
+    position: relative;
+}
+
+.app-layout {
+    width: 100%;
+    max-width: 1200px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start; /* Cambiado a flex-start para controlar mejor el espacio */
+    gap: 10px;
+    position: relative;
+    z-index: 10;
+}
+
+/* --- LOGO MASIVO --- */
+.header-logo {
+    text-align: center;
+    flex-shrink: 0;
+    padding: 5px 0;
+}
+
+.header-logo img {
+    max-height: 230px; /* Tu solicitud de tamaño */
+    height: auto;
+    width: auto;
+    filter: drop-shadow(0 4px 15px rgba(0, 38, 230, 0.4));
+    transition: max-height 0.3s ease;
+}
+
+/* --- CONTENIDO PRINCIPAL --- */
+.dashboard-content {
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    gap: 20px;
+    flex-grow: 1;
+    min-height: 0; /* Vital para que el grid no se desborde */
+    padding-bottom: 10px;
+}
+
+/* --- AJUSTES RESPONSIVOS PARA EL LOGO GIGANTE --- */
+@media (max-width: 992px) {
+    .header-logo img {
+        max-height: 150px; /* Reducción inteligente en tablets */
+    }
+}
+
+@media (max-width: 768px) {
+    .header-logo img {
+        max-height: 100px; /* Tamaño seguro en móviles para dejar ver el reproductor */
+    }
+    
+    .dashboard-content {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto 1fr;
+        gap: 10px;
+    }
+}
         }
 
-        /* Vectores angulares de fondo decorativos inspirados en tu imagen */
-        body::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 200px;
-            height: 100px;
-            border-left: 3px solid var(--amarillo-branding);
-            border-bottom: 3px solid var(--amarillo-branding);
-            transform: skewX(-45deg) translateX(-80px) translateY(-30px);
-            opacity: 0.5;
-            pointer-events: none;
-        }
-
-        body::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            right: 0;
-            width: 250px;
-            height: 120px;
-            border-right: 3px solid var(--amarillo-branding);
-            border-top: 3px solid var(--azul-electrico);
-            transform: skewX(-35deg) translateX(80px) translateY(30px);
-            opacity: 0.4;
-            pointer-events: none;
-        }
-
-        /* Estructura general de la aplicación */
-        .app-layout {
-            width: 100%;
-            max-width: 1100px;
-            height: 100%;
+        /* --- REPRODUCTOR ENFOCADO EN LA CARÁTULA --- */
+        .vertical-player-card {
+            background: rgba(4, 11, 38, 0.4);
+            border: 2px solid rgba(0, 38, 230, 0.6);
+            border-radius: 80px;
+            padding: 30px;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.8), 0 0 40px rgba(0, 38, 230, 0.15);
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            gap: 15px;
+            align-items: center;
             position: relative;
-            z-index: 10;
         }
 
-        /* LOGO SUPERIOR */
-        .header-logo {
+        .deck-top {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .live-tag {
+            margin: auto 0;
+            background: #ff0044;
+            color: #fff;
+            font-size: 0.65rem;
+            font-weight: 900;
+            padding: 1px 10px;
+            border-radius: 6px;
+            text-transform: uppercase;
+            box-shadow: 0 0 15px rgba(255, 0, 68, 0.5);
             text-align: center;
-            flex-shrink: 0;
         }
 
-        .header-logo img {
-            max-height: 250px;
-            width: auto;
-            filter: drop-shadow(0 6px 15px rgba(0, 38, 230, 0.4));
-        }
-
-        /* --- CONTENEDOR SPLIT (DOS COLUMNAS EN PC, UNA EN MÓVIL) --- */
-        .dashboard-content {
-            display: grid;
-            grid-template-columns: 1fr 1.1fr;
-            gap: 20px;
-            flex-grow: 1;
-            min-height: 0; /* Permite que los contenedores hijos hereden el scroll interno si es necesario */
-        }
-
-        /* --- SECCIÓN REPRODUCTOR --- */
-        .vertical-player-card {
-            background: linear-gradient(180deg, var(--azul-consola), #020718);
-            border: 2px solid var(--azul-electrico);
-            border-radius: 20px;
-            padding: 0px;
-            text-align: center;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+        /* Bloque de Carátula */
+        .show-info-deck {
+            margin: auto 0;
             display: flex;
             flex-direction: column;
-            justify-content: space-around; /* Distribuye el contenido verticalmente de forma equitativa */
             align-items: center;
-            overflow: hidden;
+            gap: 20px;
+            text-align: center;
+            width: 100%;
         }
 
-        .avatar-container {
+        .avatar-wrapper {
             position: relative;
-            width: 160px;
-            height: 160px;
+            width: 170px; 
+            height: 170px;
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        /* Aura luminosa trasera */
+        .avatar-wrapper::after {
+            content: '';
+            position: absolute;
+            top: -4px; left: -4px; right: -4px; bottom: -4px;
+            background: linear-gradient(135deg, var(--azul-electrico), var(--amarillo-branding));
+            border-radius: 90px;
+            z-index: 1;
+            opacity: 0.6;
+            filter: blur(12px);
         }
 
         .avatar-main {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            border-radius: 50%;
-            border: 2px solid var(--blanco);
-            box-shadow: 0 10px 30px rgba(0, 38, 230, 0.3);
-        }
-
-        .live-badge {
-            position: absolute;
-            top: 0;
-            right: 0;
-            background: #ff0044;
-            color: var(--blanco);
-            font-size: 0.65rem;
-            font-weight: 900;
-            padding: 4px 8px;
-            border-radius: 4px;
-            text-transform: uppercase;
-            box-shadow: 0 4px 10px rgba(255, 0, 68, 0.4);
-        }
-
-        .info-container h2 {
-            font-size: 1.5rem;
-            font-weight: 900;
-            margin-bottom: 1px;
-            letter-spacing: -0.5px;
-            line-height: 1.2;
-        }
-
-        .info-container p {
-            color: var(--amarillo-branding);
-            font-size: 0.95rem;
-            font-weight: 700;
-        }
-
-        /* Caja del Espectro VU-Meter Integrado */
-        .interactive-footer {
+            border-radius: 90px;
+            border: 5px solid rgba(255, 255, 255, 0.9);
             position: relative;
-            width: 100%;
-            height: 90px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: rgba(0, 4, 15, 0.8);
-            border-radius: 80px;
-            overflow: hidden;
-            border: 1px solid rgba(0, 38, 230, 0.2);
+            z-index: 2;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.6);
         }
 
-        .interactive-footer canvas {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 1;
-        }
-
+        /* --- BOTÓN PLAY GIGANTE Y DESTACADO --- */
         .circle-play-btn {
-            position: relative;
-            z-index: 5;
+            position: absolute;
+            bottom: -15px; /* Ajuste para el nuevo tamaño */
+            right: -15px; /* Ajuste para el nuevo tamaño */
             background: var(--amarillo-branding);
             color: #000;
-            border: none;
-            width: 58px;
-            height: 58px;
+            border: 5px solid #06113a; /* Borde más grueso para separar de la imagen */
+            width: 75px; /* MUCHO MÁS GRANDE */
+            height: 75px;
             border-radius: 50%;
-            font-size: 1.2rem;
+            font-size: 1.8rem; /* ICONO MÁS GRANDE */
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 6px 15px rgba(247, 227, 0, 0.4);
-            transition: all 0.25s ease;
+            box-shadow: 0 8px 25px rgba(247, 227, 0, 0.5);
+            z-index: 3;
+            transition: transform 0.2s, background-color 0.2s;
         }
 
         .circle-play-btn:hover {
-            transform: scale(1.06);
-            background: var(--blanco);
+            transform: scale(1.10) rotate(10deg);
+            background-color: var(--blanco);
         }
 
-        /* --- SECCIÓN PROGRAMACIÓN COMPACTA --- */
+        .meta-text h2 {
+            font-size: 1.6rem;
+            font-weight: 900;
+            letter-spacing: -0.5px;
+            line-height: 1.2;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+        }
+
+        .meta-text p {
+            color: var(--amarillo-branding);
+            font-size: 0.95rem;
+            font-weight: 700;
+            margin-top: 4px;
+            letter-spacing: 0.5px;
+        }
+
+        /* --- ESPECTRO COMPACTADO EN LA BASE --- */
+        .matrix-visualizer-box {
+            position: relative;
+            width: 100%;
+            height: 50px;
+        background: rgba(4, 11, 38, 0.4);
+            border-radius: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            overflow: hidden;
+            margin-bottom: 15px;
+        }
+
+        .matrix-visualizer-box canvas {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none;
+        }
+
+        /* Control Fader */
+        .volume-container {
+            width: 100%;
+            max-width: 100%px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: var(--texto-muted);
+        }
+
+        .volume-slider {
+            flex-grow: 1;
+            -webkit-appearance: none;
+            appearance: none;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            outline: none;
+            border-radius: 2px;
+        }
+
+        .volume-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--amarillo-branding);
+            cursor: pointer;
+        }
+
+        /* --- SECCIÓN TIMELINE COMPACTO --- */
         .timeline-section {
-            background: rgba(5, 17, 54, 0.4);
-            border: 1px solid rgba(0, 38, 230, 0.15);
-            border-radius: 20px;
+            background: rgba(4, 11, 38, 0.4);
+            border: 1px solid rgba(0, 38, 230, 0.2);
+            border-radius: 30px;
             padding: 20px;
             display: flex;
             flex-direction: column;
@@ -241,21 +291,15 @@
             position: relative;
         }
 
-        .tab-btn.active {
-            color: var(--amarillo-branding);
-        }
+        .tab-btn.active { color: var(--amarillo-branding); }
 
         .tab-btn.active::after {
             content: '';
             position: absolute;
-            bottom: -10px;
-            left: 0;
-            width: 100%;
-            height: 2px;
+            bottom: -10px; left: 0; width: 100%; height: 2px;
             background: var(--amarillo-branding);
         }
 
-        /* Listas de reproducción dinámicas con scroll interno si desbordan */
         .playlist-wrapper {
             display: none;
             flex-direction: column;
@@ -263,36 +307,22 @@
             margin-top: 15px;
             overflow-y: auto;
             flex-grow: 1;
-            padding-right: 4px;
         }
 
-        .playlist-wrapper.active {
-            display: flex;
-        }
-
-        /* Scrollbar personalizado estético */
-        .playlist-wrapper::-webkit-scrollbar {
-            width: 4px;
-        }
-        .playlist-wrapper::-webkit-scrollbar-thumb {
-            background: var(--azul-electrico);
-            border-radius: 2px;
-        }
+        .playlist-wrapper.active { display: flex; }
 
         .program-row {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 10px 14px;
-            border-radius: 10px;
-            background: rgba(0, 0, 0, 0.15);
-            flex-shrink: 0; /* Evita que las filas se aplasten */
+            padding: 12px 14px;
+            border-radius: 12px;
+            background: rgba(0, 0, 0, 0.2);
         }
 
         .program-row.active {
             background: var(--azul-consola);
             border-left: 4px solid var(--amarillo-branding);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
         }
 
         .row-left {
@@ -308,19 +338,9 @@
             object-fit: cover;
         }
 
-        .row-details h4 {
-            font-size: 0.95rem;
-            font-weight: 700;
-        }
-
-        .row-details p {
-            font-size: 0.8rem;
-            color: var(--texto-muted);
-        }
-
-        .program-row.active .row-details p {
-            color: var(--amarillo-branding);
-        }
+        .row-details h4 { font-size: 0.95rem; font-weight: 700; }
+        .row-details p { font-size: 0.8rem; color: var(--texto-muted); }
+        .program-row.active .row-details p { color: var(--amarillo-branding); }
 
         .row-time {
             font-size: 0.75rem;
@@ -336,132 +356,109 @@
             color: #000;
         }
 
-        /* FOOTER DE LA APP */
         footer {
+            
             display: flex;
             justify-content: space-between;
             align-items: center;
             font-size: 0.75rem;
             color: var(--texto-muted);
-            flex-shrink: 0;
             padding-top: 5px;
             border-top: 1px solid rgba(255, 255, 255, 0.05);
         }
 
-        .socials a {
-            color: var(--blanco);
-            margin-left: 12px;
-            font-size: 0.95rem;
-            transition: color 0.2s;
-        }
+        .socials a { color: var(--blanco); margin-left: 12px; }
+        .socials a:hover { color: var(--amarillo-branding); }
 
-        .socials a:hover {
-            color: var(--amarillo-branding);
-        }
-
-        /* --- RESPONSIVO ADAPTATIVO PARA MÓVILES (PANTALLA COMPLETA TOTAL) --- */
+        /* --- AJUSTES RESPONSIVOS --- */
         @media (max-width: 768px) {
-            body {
-                padding: 10px;
-            }
-
-            .app-layout {
-                gap: 10px;
-            }
-
+            
+            /* Logo más grande en móvil también */
             .header-logo img {
-                max-height: 120px;
+                max-height: 120px; 
             }
-
-            /* Convierte la grilla en un bloque vertical que se ajusta exactamente */
+            
             .dashboard-content {
                 grid-template-columns: 1fr;
-                grid-template-rows: 1.1fr 1fr;
+                grid-template-rows: 1.4fr 1fr;
                 gap: 12px;
-                min-height: 0;
             }
 
-            .vertical-player-card {
-                padding: 5px;
+            .vertical-player-card { padding: 5px; }
+
+            .show-info-deck {
+                flex-direction: row;
+                text-align: left;
+                justify-content: center;
+                gap: 25px;
             }
 
-            .avatar-container {
-                width: 100px;
-                height: 100px;
+            .avatar-wrapper {
+                width: 110px;
+                height: 110px;
             }
 
-            .info-container h2 {
-                font-size: 1.25rem;
-            }
+            .avatar-main { border-radius: 80px; }
 
-            .interactive-footer {
-                height: 70px;
-            }
-
+            /* Play masivo adaptado a móvil */
             .circle-play-btn {
-                width: 44px;
-                height: 44px;
-                font-size: 1rem;
+                width: 60px; /* Más grande en móvil (era 40px) */
+                height: 60px;
+                font-size: 1.4rem;
+                bottom: -12px; 
+                right: -12px;
+                border-width: 4px; /* Borde visible en móvil */
             }
 
-            .timeline-section {
-                padding: 12px;
-            }
-
-            .program-row {
-                padding: 8px 12px;
-            }
-
-            .row-avatar {
-                width: 52px;
-                height: 52px;
-            }
-
-            .row-details h4 {
-                font-size: 0.85rem;
-            }
-        }
-
-        /* Soporte para teléfonos muy pequeños (ajuste de seguridad) */
-        @media (max-height: 550px) {
-            .avatar-container { display: none; } /* Oculta la foto para dar prioridad a los controles y textos */
+            .meta-text h2 { font-size: 1.3rem; }
+            .matrix-visualizer-box { height: 60px; }
         }
     </style>
 </head>
 <body>
 
     <div class="app-layout">
-        <!-- Encabezado de Marca -->
         <div class="header-logo">
             <img src="http://imgfz.com/i/cTRX9tY.png" alt="Zulianísima 100.3 FM">
+
         </div>
 
-        <!-- Dashboard Todo en Uno -->
         <div class="dashboard-content">
             
-            <!-- Izquierda: Consola de Audio -->
             <section class="vertical-player-card">
-                <div class="avatar-container">
-                    <img id="currentLocutorPhoto" src="logo.jpg" alt="Locutor al aire" class="avatar-main">
-                    <div class="live-badge">Al AIRE</div>
+                <div class="deck-top">
+                  <div class="deck-top">
+                      
+                    <span style="font-size: 0.75rem; font-weight: 800; color: var(--texto-muted);">AUDIO EN VIVO</span>
+                    <div class="live-tag">AL AIRE</div>
+                </div>
                 </div>
 
-                <div class="info-container">
-                    <h2 id="currentShowTitle">Sintonizando...</h2>
-                    <p id="currentHost">Zulianísima 100.3 FM</p>
+                <div class="show-info-deck">
+                    <div class="avatar-wrapper" id="playerAvatarNode">
+                        <img id="currentLocutorPhoto" src="logo.jpg" alt="Locutor" class="avatar-main">
+                        <button class="circle-play-btn" id="playBtn" onclick="togglePlayback()">
+                            <i class="fas fa-play" id="playIcon" style="margin-left: 4px;"></i> </button>
+                    </div>
+                    <div class="meta-text">
+                        <h2 id="currentShowTitle">Cargando Emisión...</h2>
+                        <p id="currentHost">Zulianísima Radio</p>
+                    </div>
                 </div>
 
-                <div class="interactive-footer">
-                    <canvas id="vuMeterVisualizer"></canvas>
-                    <button class="circle-play-btn" id="playBtn" onclick="togglePlayback()">
-                        <i class="fas fa-play" id="playIcon"></i>
-                    </button>
+                <div class="matrix-visualizer-box">
+                    <canvas id="matrixVisualizer"></canvas>
+                </div>
+
+                <div class="volume-container">
+                    <i class="fas fa-volume-down" id="volIcon"></i>
+                    <input type="range" class="volume-slider" id="volumeControl" min="0" max="1" step="0.05" value="1" oninput="changeVolume(this.value)">
                 </div>
 
                 <audio id="radioStream" src="https://stream-177.surfernetwork.com/m7z6zdlqlrkuv" crossorigin="anonymous"></audio>
             </section>
 
-            <!-- Derecha: Parrilla de Programación Inteligente -->
+     <!-- Derecha: Parrilla de Programación Inteligente -->
             <section class="timeline-section">
                 <div class="tabs-container">
                     <button class="tab-btn" id="btn-semana" onclick="switchTab('semana')">Lunes a Viernes</button>
@@ -598,19 +595,19 @@
             </section>
 
         </div>
-
+        
         <!-- Footer Reducido -->
         <footer>
-            <p>&copy; 2026 Zulianísima FM - ACMEDIA</p>
+            <p>&copy; 2026 Zulianísima FM- powered by ACMEDIA</p>
             <div class="socials">
                 <a href="#"><i class="fab fa-instagram"></i></a>
-                <a href="#"><i class="fab fa-facebook-f"></i></a>
                 <a href="#"><i class="fab fa-whatsapp"></i></a>
             </div>
         </footer>
     </div>
 
-    <script>
+
+   <script>
         const progSemana = [
             { id: "card-amaneciendo", inicio: 4, fin: 7, titulo: "Amaneciendo con Dios", locutor: "", foto: "https://images.unsplash.com/photo-1617610881975-8e524774ab45?q=80&w=870&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" },
             { id: "card-mananero", inicio: 7, fin: 8, titulo: "Cabimas en sintonía", locutor: "Con Freddy Gomez", foto: "https://scontent.fccs3-1.fna.fbcdn.net/v/t39.30808-6/679774385_10242060138221140_2834514087338517829_n.jpg?stp=dst-jpg_tt6&cstp=mx688x688&ctp=s688x688&_nc_cat=105&ccb=1-7&_nc_sid=a5f93a&_nc_ohc=aa9O2_WBEf8Q7kNvwGVFFD8&_nc_oc=Adrtqp7cJnn-r7nlsqGBlyj0gFrcdfKPbml6blSE-J7ixJMVNeUAbVd7PrQBPthaKLE&_nc_zt=23&_nc_ht=scontent.fccs3-1.fna&_nc_gid=6Rb5IvWpD1b4wRKMFPpdmg&_nc_ss=7b289&oh=00_AQBMDFdBPw1439WC90E5KPTUHs_0IYTKKDNPyTJky3WImA&oe=6A54924D" },
@@ -630,6 +627,8 @@
         ];
 
         const porDefecto = { id: null, titulo: "Zulianísima 100.3 FM", locutor: "PROGRAMACION 24/7", foto: "http://imgfz.com/i/EaFrZU1.jpeg" };
+
+
 
         progSemana.forEach(p => document.getElementById(p.id).querySelector('.row-avatar').src = p.foto);
         progFinde.forEach(p => document.getElementById(p.id).querySelector('.row-avatar').src = p.foto);
@@ -682,14 +681,16 @@
         sincronizarEmisora();
         setInterval(sincronizarEmisora, 30000);
 
-        // --- ECO REGULADOR VU-METER ---
+        // --- ENGINE DEL ESPECTRO ---
         const audio = document.getElementById('radioStream');
         const playIcon = document.getElementById('playIcon');
-        const canvas = document.getElementById('vuMeterVisualizer');
+        const canvas = document.getElementById('matrixVisualizer');
         const canvasCtx = canvas.getContext('2d');
+        const avatarNode = document.getElementById('playerAvatarNode');
 
         let audioCtx, audioSource, analyser, dataArray, bufferLength;
         let isInit = false;
+        let peaks = [];
 
         function resizeCanvas() {
             canvas.width = canvas.parentElement.clientWidth;
@@ -705,56 +706,67 @@
             audioSource = audioCtx.createMediaElementSource(audio);
             audioSource.connect(analyser);
             analyser.connect(audioCtx.destination);
-            analyser.fftSize = 32; 
+            analyser.fftSize = 64; 
             bufferLength = analyser.frequencyBinCount;
             dataArray = new Uint8Array(bufferLength);
             isInit = true;
         }
 
-        function renderVUMeter() {
-            requestAnimationFrame(renderVUMeter);
+        function renderMatrix() {
+            requestAnimationFrame(renderMatrix);
             canvasCtx.clearRect(0, 0, canvas.width, canvas.height);
 
+            const numBars = 24; 
+            const barWidth = Math.floor(canvas.width / numBars) - 3;
+            const blockHeight = 3; 
+            const blockGap = 2;   
+            const maxBlocks = Math.floor(canvas.height / (blockHeight + blockGap)) - 1;
+            const startX = (canvas.width - (numBars * (barWidth + 3))) / 2;
+
             if (!isInit || audio.paused) {
-                const barWidth = 6;
-                const barGap = 4;
-                const totalBars = 14;
-                const startX = (canvas.width - (totalBars * (barWidth + barGap))) / 2;
-                for(let i=0; i < totalBars; i++) {
-                    canvasCtx.fillStyle = 'rgba(0, 38, 230, 0.15)';
-                    canvasCtx.fillRect(startX + i * (barWidth + barGap), canvas.height - 10, barWidth, 3);
+                avatarNode.style.transform = "scale(1)";
+                for (let i = 0; i < numBars; i++) {
+                    const x = startX + i * (barWidth + 3);
+                    canvasCtx.fillStyle = 'rgba(0, 38, 230, 0.1)';
+                    canvasCtx.fillRect(x, canvas.height - blockHeight - 2, barWidth, blockHeight);
                 }
                 return;
             }
 
             analyser.getByteFrequencyData(dataArray);
 
-            const barWidth = 6;
-            const barGap = 4;
-            const totalBars = bufferLength - 2; 
-            const startX = (canvas.width - (totalBars * (barWidth + barGap))) / 2;
+            // Efecto Pulse sutil en la carátula según bajos
+            let bassSum = dataArray[0] + dataArray[1] + dataArray[2];
+            let pulseScale = 1 + (bassSum / 765) * 0.06;
+            avatarNode.style.transform = `scale(${pulseScale})`;
 
-            for (let i = 0; i < totalBars; i++) {
-                const value = dataArray[i];
-                const percent = value / 255;
-                const barHeight = percent * canvas.height * 0.82;
+            for (let i = 0; i < numBars; i++) {
+                const dataIndex = Math.abs(i - Math.floor(numBars / 2)) * 2;
+                const rawValue = dataArray[dataIndex] || 0;
+                let activeBlocks = Math.floor((rawValue / 255) * maxBlocks);
 
-                const x = startX + i * (barWidth + barGap);
-                const y = canvas.height - barHeight - 4;
+                const x = startX + i * (barWidth + 1);
 
-                let gradient = canvasCtx.createLinearGradient(x, canvas.height, x, y);
-                gradient.addColorStop(0, '#f7e300');    
-                gradient.addColorStop(0.7, '#f7e300');  
-                gradient.addColorStop(1, '#0026e6');    
+                if (peaks[i] === undefined || activeBlocks > peaks[i]) {
+                    peaks[i] = activeBlocks;
+                } else if (peaks[i] > 0) {
+                    peaks[i] -= 0.2;
+                }
 
-                canvasCtx.fillStyle = gradient;
-                if(barHeight > 0) {
-                    canvasCtx.fillRect(x, y, barWidth, barHeight);
+                for (let b = 0; b < activeBlocks; b++) {
+                    const y = canvas.height - 2 - b * (blockHeight + blockGap);
+                    let blockPercent = b / maxBlocks;
+                    
+                    if (blockPercent < 0.6) canvasCtx.fillStyle = '#0026e6';
+                    else if (blockPercent < 0.85) canvasCtx.fillStyle = '#0066ff';
+                    else canvasCtx.fillStyle = '#f7e300';
+
+                    canvasCtx.fillRect(x, y, barWidth, blockHeight);
                 }
             }
         }
 
-        renderVUMeter();
+        renderMatrix();
 
         function togglePlayback() {
             initAudio();
@@ -764,11 +776,21 @@
                 audio.load();
                 audio.play().then(() => {
                     playIcon.className = 'fas fa-pause';
-                }).catch(err => console.log("Streaming Error"));
+                    playIcon.style.marginLeft = '0'; // Ajuste óptico de icono pausa
+                }).catch(err => console.log("Stream offline"));
             } else {
                 audio.pause();
                 playIcon.className = 'fas fa-play';
+                playIcon.style.marginLeft = '4px'; // Ajuste óptico de icono play
             }
+        }
+
+        function changeVolume(val) {
+            audio.volume = val;
+            const volIcon = document.getElementById('volIcon');
+            if(val == 0) volIcon.className = 'fas fa-volume-mute';
+            else if(val < 0.5) volIcon.className = 'fas fa-volume-down';
+            else volIcon.className = 'fas fa-volume-up';
         }
     </script>
 </body>

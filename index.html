@@ -57,7 +57,7 @@
 }
 
 .header-logo img {
-    max-height: 230px; /* Tu solicitud de tamaño */
+    max-height: 250px; /* Tu solicitud de tamaño */
     height: auto;
     width: auto;
     filter: drop-shadow(0 4px 15px rgba(0, 38, 230, 0.4));
@@ -96,8 +96,8 @@
 
         /* --- REPRODUCTOR ENFOCADO EN LA CARÁTULA --- */
         .vertical-player-card {
-            background: rgba(4, 11, 38, 0.4);
-            border: 2px solid rgba(0, 38, 230, 0.6);
+            background: linear-gradient(180deg, var(--azul-consola), #020718);
+            border: 2px solid var(--azul-electrico);
             border-radius: 80px;
             padding: 30px;
             box-shadow: 0 30px 60px rgba(0, 0, 0, 0.8), 0 0 40px rgba(0, 38, 230, 0.15);
@@ -110,18 +110,18 @@
 
         .deck-top {
             width: 100%;
-            display: flex;
-            align-items: center;
+            display: ;
+            align-items: left;
             justify-content: space-between;
         }
 
         .live-tag {
-            margin: auto 0;
+            margin: left;
             background: #ff0044;
             color: #fff;
             font-size: 0.65rem;
             font-weight: 900;
-            padding: 1px 10px;
+            padding: 5px 10px;
             border-radius: 6px;
             text-transform: uppercase;
             box-shadow: 0 0 15px rgba(255, 0, 68, 0.5);
@@ -134,19 +134,21 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 20px;
+            gap: 30px;
             text-align: center;
             width: 100%;
         }
 
         .avatar-wrapper {
-           
+             width: 160px;
+             height:160px;
+             gap: 50px;
         }
 
         /* Aura luminosa trasera */
   .avatar-main {
-            width: 100%;
-            height: 100%;
+            width: 150px;
+            height: 150px;
             object-fit: cover;
             border-radius: 90px;
             border: 1px solid rgba(255, 255, 255, 0.9);
@@ -201,7 +203,7 @@
         .matrix-visualizer-box {
             position: relative;
             width: 100%;
-            height: 50px;
+            height: 60px;
         background: rgba(4, 11, 38, 0.4);
             border-radius: 24px;
             border: 1px solid rgba(255, 255, 255, 0.05);
@@ -210,8 +212,8 @@
         }
 
         .matrix-visualizer-box canvas {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
+            position: center;
+            top: 2; left: 0; width: 100%; height: 100%;
             pointer-events: none;
         }
 
@@ -361,7 +363,7 @@
             
             /* Logo más grande en móvil también */
             .header-logo img {
-                max-height: 130px; 
+                max-height: 150px; 
             }
             
             .dashboard-content {
@@ -380,11 +382,11 @@
             }
 
             .avatar-wrapper {
-                width: 110px;
-                height: 110px;
+                width: 150px;
+                height:150px;
             }
 
-            .avatar-main { border-radius: 10px; }
+            .avatar-main { border-radius: 80px; }
 
             /* Play masivo adaptado a móvil */
             .circle-play-btn {
@@ -397,7 +399,7 @@
             }
 
             .meta-text h2 { font-size: 1.3rem; }
-            .matrix-visualizer-box { height: 80px; }
+            .matrix-visualizer-box { height: 50px; }
         }
     </style>
 </head>
@@ -415,7 +417,7 @@
                 <div class="deck-top">
                   <div class="deck-top">
                       
-                    <span style="font-size: 0.75rem; font-weight: 800; color: var(--texto-muted);">AUDIO EN VIVO</span>
+                    <span style="font-size: 0.75rem; font-weight: 00; color: var(--texto-muted);"></span>
                     <div class="live-tag">AL AIRE</div>
                 </div>
                 </div>
@@ -633,39 +635,53 @@
                 document.getElementById('wrapper-finde').classList.add('active');
             }
         }
+function sincronizarEmisora() {
+    // Obtener fecha y hora exacta en Caracas (Venezuela)
+    const fechaVenezuela = new Date().toLocaleString("en-US", { timeZone: "America/Caracas" });
+    const ahora = new Date(fechaVenezuela);
+    
+    const horaActual = ahora.getHours();
+    const diaSemana = ahora.getDay(); // 0 = Domingo, 6 = Sábado
+    
+    const esFinDeSemana = (diaSemana === 0 || diaSemana === 6);
+    const parrillaActiva = esFinDeSemana ? progFinde : progSemana;
+    
+    // Control de inicio de pestañas
+    if (!window.tabIniciada) {
+        switchTab(esFinDeSemana ? 'finde' : 'semana');
+        window.tabIniciada = true;
+    }
 
-        function sincronizarEmisora() {
-            const ahora = new Date();
-            const horaActual = ahora.getHours();
-            const diaSemana = ahora.getDay();
-            
-            const esFinDeSemana = (diaSemana === 0 || diaSemana === 6);
-            const parrillaActiva = esFinDeSemana ? progFinde : progSemana;
-            
-            if (!window.tabIniciada) {
-                switchTab(esFinDeSemana ? 'finde' : 'semana');
-                window.tabIniciada = true;
-            }
+    // Limpiar clases activas visuales
+    progSemana.forEach(p => document.getElementById(p.id)?.classList.remove('active'));
+    progFinde.forEach(p => document.getElementById(p.id)?.classList.remove('active'));
 
-            progSemana.forEach(p => document.getElementById(p.id).classList.remove('active'));
-            progFinde.forEach(p => document.getElementById(p.id).classList.remove('active'));
+    let programaActual = porDefecto;
 
-            let programaActual = porDefecto;
-
-            parrillaActiva.forEach(p => {
-                if (horaActual >= p.inicio && horaActual < p.fin) {
-                    programaActual = p;
-                    document.getElementById(p.id).classList.add('active');
-                }
-            });
-
-            document.getElementById('currentShowTitle').innerText = programaActual.titulo;
-            document.getElementById('currentHost').innerText = programaActual.locutor;
-            document.getElementById('currentLocutorPhoto').src = programaActual.foto;
+    // Buscar programa vigente
+    parrillaActiva.forEach(p => {
+        if (horaActual >= p.inicio && horaActual < p.fin) {
+            programaActual = p;
+            const element = document.getElementById(p.id);
+            if (element) element.classList.add('active');
         }
+    });
 
-        sincronizarEmisora();
-        setInterval(sincronizarEmisora, 30000);
+    // Actualizar elementos de la interfaz
+    if (document.getElementById('currentShowTitle')) {
+        document.getElementById('currentShowTitle').innerText = programaActual.titulo;
+    }
+    if (document.getElementById('currentHost')) {
+        document.getElementById('currentHost').innerText = programaActual.locutor;
+    }
+    if (document.getElementById('currentLocutorPhoto')) {
+        document.getElementById('currentLocutorPhoto').src = programaActual.foto;
+    }
+}
+
+// Inicializar y configurar refresco cada 30 segundos
+sincronizarEmisora();
+setInterval(sincronizarEmisora, 30000);
 
         // --- ENGINE DEL ESPECTRO ---
         const audio = document.getElementById('radioStream');

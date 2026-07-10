@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ZulianIsima FM</title>
+    <title>Zulianisima 100.3 FM</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
@@ -140,30 +140,16 @@
         }
 
         .avatar-wrapper {
-            position: relative;
-            width: 170px; 
-            height: 170px;
-            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+           
         }
 
         /* Aura luminosa trasera */
-        .avatar-wrapper::after {
-            content: '';
-            position: absolute;
-            top: -4px; left: -4px; right: -4px; bottom: -4px;
-            background: linear-gradient(135deg, var(--azul-electrico), var(--amarillo-branding));
-            border-radius: 90px;
-            z-index: 1;
-            opacity: 0.6;
-            filter: blur(12px);
-        }
-
-        .avatar-main {
+  .avatar-main {
             width: 100%;
             height: 100%;
             object-fit: cover;
             border-radius: 90px;
-            border: 5px solid rgba(255, 255, 255, 0.9);
+            border: 1px solid rgba(255, 255, 255, 0.9);
             position: relative;
             z-index: 2;
             box-shadow: 0 15px 35px rgba(0,0,0,0.6);
@@ -375,7 +361,7 @@
             
             /* Logo más grande en móvil también */
             .header-logo img {
-                max-height: 120px; 
+                max-height: 130px; 
             }
             
             .dashboard-content {
@@ -398,7 +384,7 @@
                 height: 110px;
             }
 
-            .avatar-main { border-radius: 80px; }
+            .avatar-main { border-radius: 10px; }
 
             /* Play masivo adaptado a móvil */
             .circle-play-btn {
@@ -411,7 +397,7 @@
             }
 
             .meta-text h2 { font-size: 1.3rem; }
-            .matrix-visualizer-box { height: 60px; }
+            .matrix-visualizer-box { height: 80px; }
         }
     </style>
 </head>

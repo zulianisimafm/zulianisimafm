@@ -622,27 +622,78 @@
              { id: "card-provecho", inicio: 12, fin: 14, titulo: "Buen Provecho Musical", locutor: "Con Jorge Acosta", foto: "https://cdn.phototourl.com/free/2026-07-11-f8c33167-d3c8-4862-9f1c-bd3e8f531734.jpg" }
         ];
 
-        const porDefecto = { id: null, titulo: "Zulianisima 100.3 FM", locutor: "PROGRAMACION 24/7", foto: "https://cdn.phototourl.com/free/2026-07-11-bc942ae5-cb08-45f9-8367-c19d578302ff.jpg" };
+// Objeto por defecto cuando no hay programa al aire o es feriado
+const porDefecto = { 
+    id: null, 
+    titulo: "Zulianisima 100.3 FM", 
+    locutor: "PROGRAMACION 24/7", 
+    foto: "https://cdn.phototourl.com/free/2026-07-11-bc942ae5-cb08-45f9-8367-c19d578302ff.jpg" 
+};
 
+// 1. Feriados Fijos Nacionales de Venezuela ("MM-DD")
+const feriadosFijosVE = [
+    "01-01", // Año Nuevo
+    "04-19", // Proclamación de la Independencia
+    "05-01", // Día del Trabajador
+    "06-24", // Batalla de Carabobo
+    "07-05", // Día de la Independencia
+    "07-24", // Natalicio del Libertador
+    "10-12", // Día de la Resistencia Indígena
+    "12-24", // Víspera de Navidad
+    "12-25", // Navidad
+    "12-31"  // Fin de Año
+];
 
+// 2. Feriados Variables / Móviles ("YYYY-MM-DD")
+const feriadosVariablesVE = [
+    // 2026
+    "2026-02-16", "2026-02-17", // Carnaval
+    "2026-04-02", "2026-04-03", // Semana Santa
+    // 2027
+    "2027-02-08", "2027-02-09", // Carnaval
+    "2027-03-25", "2027-03-26"  // Semana Santa
+];
 
-        progSemana.forEach(p => document.getElementById(p.id).querySelector('.row-avatar').src = p.foto);
-        progFinde.forEach(p => document.getElementById(p.id).querySelector('.row-avatar').src = p.foto);
+// Función para verificar si la fecha actual es feriado en Venezuela
+function esFeriadoVenezuela(fecha) {
+    const mes = String(fecha.getMonth() + 1).padStart(2, '0');
+    const dia = String(fecha.getDate()).padStart(2, '0');
+    const anio = fecha.getFullYear();
 
-        function switchTab(type) {
-            document.getElementById('btn-semana').classList.remove('active');
-            document.getElementById('btn-finde').classList.remove('active');
-            document.getElementById('wrapper-semana').classList.remove('active');
-            document.getElementById('wrapper-finde').classList.remove('active');
+    const fechaCorta = `${mes}-${dia}`;
+    const fechaCompleta = `${anio}-${mes}-${dia}`;
 
-            if (type === 'semana') {
-                document.getElementById('btn-semana').classList.add('active');
-                document.getElementById('wrapper-semana').classList.add('active');
-            } else {
-                document.getElementById('btn-finde').classList.add('active');
-                document.getElementById('wrapper-finde').classList.add('active');
-            }
-        }
+    return feriadosFijosVE.includes(fechaCorta) || feriadosVariablesVE.includes(fechaCompleta);
+}
+
+// Inicializar fotos de avatares en las listas
+function inicializarAvatares() {
+    if (typeof progSemana !== 'undefined') {
+        progSemana.forEach(p => {
+            const el = document.getElementById(p.id)?.querySelector('.row-avatar');
+            if (el) el.src = p.foto;
+        });
+    }
+    if (typeof progFinde !== 'undefined') {
+        progFinde.forEach(p => {
+            const el = document.getElementById(p.id)?.querySelector('.row-avatar');
+            if (el) el.src = p.foto;
+        });
+    }
+}
+
+// Cambio de pestañas entre semana y fin de semana
+function switchTab(type) {
+    const esSemana = type === 'semana';
+
+    document.getElementById('btn-semana')?.classList.toggle('active', esSemana);
+    document.getElementById('wrapper-semana')?.classList.toggle('active', esSemana);
+    
+    document.getElementById('btn-finde')?.classList.toggle('active', !esSemana);
+    document.getElementById('wrapper-finde')?.classList.toggle('active', !esSemana);
+}
+
+// Sincronizador principal de la emisora
 function sincronizarEmisora() {
     // Obtener fecha y hora exacta en Caracas (Venezuela)
     const fechaVenezuela = new Date().toLocaleString("en-US", { timeZone: "America/Caracas" });
@@ -652,44 +703,58 @@ function sincronizarEmisora() {
     const diaSemana = ahora.getDay(); // 0 = Domingo, 6 = Sábado
     
     const esFinDeSemana = (diaSemana === 0 || diaSemana === 6);
-    const parrillaActiva = esFinDeSemana ? progFinde : progSemana;
-    
-    // Control de inicio de pestañas
+    const esFeriado = esFeriadoVenezuela(ahora);
+
+    // Control de inicio de pestañas (solo la primera vez)
     if (!window.tabIniciada) {
         switchTab(esFinDeSemana ? 'finde' : 'semana');
         window.tabIniciada = true;
     }
 
-    // Limpiar clases activas visuales
-    progSemana.forEach(p => document.getElementById(p.id)?.classList.remove('active'));
-    progFinde.forEach(p => document.getElementById(p.id)?.classList.remove('active'));
+    // Limpiar marcas activas en ambas listas
+    if (typeof progSemana !== 'undefined' && typeof progFinde !== 'undefined') {
+        [...progSemana, ...progFinde].forEach(p => {
+            document.getElementById(p.id)?.classList.remove('active');
+        });
+    }
 
     let programaActual = porDefecto;
 
-    // Buscar programa vigente
-    parrillaActiva.forEach(p => {
-        if (horaActual >= p.inicio && horaActual < p.fin) {
-            programaActual = p;
-            const element = document.getElementById(p.id);
-            if (element) element.classList.add('active');
-        }
-    });
+    // Solo busca en la parrilla si NO es un día feriado
+    if (!esFeriado) {
+        const parrillaActiva = esFinDeSemana ? progFinde : progSemana;
 
-    // Actualizar elementos de la interfaz
-    if (document.getElementById('currentShowTitle')) {
-        document.getElementById('currentShowTitle').innerText = programaActual.titulo;
+        parrillaActiva.forEach(p => {
+            // Soporta horarios normales (ej. 14 a 18) y nocturnos que cruzan la medianoche (ej. 22 a 02)
+            const esNocturno = p.inicio > p.fin;
+            const enHorario = esNocturno 
+                ? (horaActual >= p.inicio || horaActual < p.fin)
+                : (horaActual >= p.inicio && horaActual < p.fin);
+
+            if (enHorario) {
+                programaActual = p;
+                const element = document.getElementById(p.id);
+                if (element) element.classList.add('active');
+            }
+        });
     }
-    if (document.getElementById('currentHost')) {
-        document.getElementById('currentHost').innerText = programaActual.locutor;
-    }
-    if (document.getElementById('currentLocutorPhoto')) {
-        document.getElementById('currentLocutorPhoto').src = programaActual.foto;
-    }
+
+    // Actualizar la interfaz principal
+    const elTitulo = document.getElementById('currentShowTitle');
+    const elLocutor = document.getElementById('currentHost');
+    const elFoto = document.getElementById('currentLocutorPhoto');
+
+    if (elTitulo) elTitulo.innerText = programaActual.titulo;
+    if (elLocutor) elLocutor.innerText = programaActual.locutor;
+    if (elFoto) elFoto.src = programaActual.foto;
 }
 
-// Inicializar y configurar refresco cada 30 segundos
-sincronizarEmisora();
-setInterval(sincronizarEmisora, 30000);
+// Ejecución segura una vez cargado el DOM
+document.addEventListener('DOMContentLoaded', () => {
+    inicializarAvatares();
+    sincronizarEmisora();
+    setInterval(sincronizarEmisora, 30000); // Revisa cada 30 segundos
+});
 
         // --- ENGINE DEL ESPECTRO ---
         const audio = document.getElementById('radioStream');

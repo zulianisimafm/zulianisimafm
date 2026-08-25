@@ -19,840 +19,766 @@
   
     <style>
         :root {
-         --azul-fondo: #0d0c7c;
-            --azul-electrico: #08074e;
-            --azul-consola: #0f0e6a;
-            --amarillo-branding: #f7e300;
-            --blanco: #ffffff;
-            --texto-muted: #7b8fa8;
+            --brand-blue: #001fbc;
+            --brand-yellow: #fcd200;
+            --brand-red: #ff0044;
+            --brand-white: #ffffff;
+            --bg-dark: #0d0c7c;
+            --card-bg: rgba(2, 10, 42, 0.85);
+            --neon-glow: rgba(252, 210, 0, 0.4);
         }
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Montserrat', sans-serif;
+            font-family: 'Poppins', sans-serif;
         }
 
-       body {
-    background-color: var(--azul-fondo);
-    color: var(--blanco);
-    height: 100vh;
-    height: 100dvh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 10px; /* Padding reducido para ganar espacio real */
-    overflow: hidden;
-    position: relative;
-}
-
-.app-layout {
-    width: 100%;
-    max-width: 1200px;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start; /* Cambiado a flex-start para controlar mejor el espacio */
-    gap: 10px;
-    position: relative;
-    z-index: 10;
-}
-
-/* --- LOGO MASIVO --- */
-.header-logo {
-    text-align: center;
-    flex-shrink: 0;
-}
-
-.header-logo img {
-    max-height: 230px; /* Tu solicitud de tamaño */
-    height: auto;
-    width: auto;
-    filter: drop-shadow(0 4px 15px rgba(0, 38, 230, 0.4));
-    transition: max-height 0.3s ease;
-}
-
-/* --- CONTENIDO PRINCIPAL --- */
-.dashboard-content {
-    display: grid;
-    grid-template-columns: 1.1fr 0.9fr;
-    gap: 20px;
-    flex-grow: 1;
-    min-height: 0; /* Vital para que el grid no se desborde */
-    padding-bottom: 10px;
-}
-
-/* --- AJUSTES RESPONSIVOS PARA EL LOGO GIGANTE --- */
-@media (max-width: 992px) {
-    .header-logo img {
-        max-height: 150px; /* Reducción inteligente en tablets */
-    }
-}
-
-@media (max-width: 768px) {
-    .header-logo img {
-        max-height: 100px; /* Tamaño seguro en móviles para dejar ver el reproductor */
-    }
-    
-    .dashboard-content {
-        grid-template-columns: 1fr;
-        grid-template-rows: auto 1fr;
-        gap: 10px;
-    }
-}
-        }
-
-        /* --- REPRODUCTOR ENFOCADO EN LA CARÁTULA --- */
-        .vertical-player-card {
-            background: linear-gradient(180deg, var(--azul-consola), #020718);
-            border: 2px solid var(--azul-electrico);
-            border-radius: 80px;
-            padding: 30px;
-            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.8), 0 0 40px rgba(0, 38, 230, 0.15);
+        body {
+            background-color: var(--bg-dark);
+            background-image: 
+                radial-gradient(circle at 50% 50%, rgba(0, 31, 188, 0.6) 0%, rgba(1, 6, 38, 0.95) 100%),
+                radial-gradient(rgba(0, 18, 120, 0.8) 2px, transparent 2.5px);
+            background-size: 100% 100%, 18px 18px;
+            color: #fff;
+            min-height: 100vh;
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
             align-items: center;
+            justify-content: space-between;
+            padding: 20px 15px 0 15px;
+            overflow-x: hidden;
             position: relative;
         }
 
-        .deck-top {
+        #bgCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
             width: 100%;
-            display: ;
-            align-items: left;
-            justify-content: space-between;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none;
+            opacity: 0.5;
         }
 
-        .live-tag {
-            margin: left;
-            background: #ff0044;
-            color: #fff;
-            font-size: 0.65rem;
-            font-weight: 900;
-            padding: 5px 10px;
-            border-radius: 6px;
-            text-transform: uppercase;
-            box-shadow: 0 0 15px rgba(255, 0, 68, 0.5);
+        .player-container {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 850px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        /* HEADER LOGO */
+        .brand-header {
             text-align: center;
-        }
-
-        /* Bloque de Carátula */
-        .show-info-deck {
-            margin: auto 0;
+            user-select: none;
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 30px;
-            text-align: center;
+            justify-content: center;
             width: 100%;
         }
 
-        .avatar-wrapper {
-             width: 160px;
-             height:160px;
-             gap: 50px;
+        .logo-img {
+            width: 100%;
+            max-width: 360px;
+            height: auto;
+            object-fit: contain;
+            filter: drop-shadow(0 0 15px rgba(252, 210, 0, 0.3));
+            transition: transform 0.3s ease;
         }
 
-        /* Aura luminosa trasera */
-  .avatar-main {
-            width: 150px;
-            height: 150px;
+        .logo-img:hover {
+            transform: scale(1.02);
+        }
+
+        /* TARJETA CON CARÁTULA EN TODO EL REPRODUCTOR */
+        .onair-card {
+            border-radius: 28px;
+            padding: 35px 28px 28px 28px;
+            box-shadow: 
+                0 20px 40px rgba(0, 0, 0, 0.8),
+                0 0 30px rgba(0, 31, 188, 0.3);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            min-height: 520px;
+            border: 1px solid rgba(252, 210, 0, 0.3);
+        }
+
+        /* IMAGEN DE FONDO ENFOCADA EN ROSTROS */
+        .cover-background {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
             object-fit: cover;
-            border-radius: 90px;
-            border: 1px solid rgba(255, 255, 255, 0.9);
+            object-position: center 20%; /* Enfoca hacia la parte superior para centrar rostros */
+            z-index: 0;
+            transition: src 0.5s ease-in-out;
+        }
+
+        /* DEGRADADO OSCURO SOBRE LA CARÁTULA */
+        .cover-gradient-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(
+                to bottom,
+                rgba(1, 6, 38, 0.15) 0%,
+                rgba(1, 6, 38, 0.55) 50%,
+                rgba(1, 6, 38, 0.98) 100%
+            );
+            z-index: 1;
+        }
+
+        .onair-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 28px;
+            padding: 2px;
+            background: linear-gradient(135deg, rgba(252, 210, 0, 0.8), transparent, rgba(255, 0, 68, 0.8));
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            pointer-events: none;
+            z-index: 3;
+        }
+
+        /* DETALLES Y CONTROLES DEL PROGRAMA SOBRE EL DEGRADADO */
+        .info-container {
             position: relative;
             z-index: 2;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.6);
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            align-items: flex-start;
+            width: 100%;
         }
 
-        /* --- BOTÓN PLAY GIGANTE Y DESTACADO --- */
-        .circle-play-btn {
-            position: absolute;
-            bottom: -15px; /* Ajuste para el nuevo tamaño */
-            right: -15px; /* Ajuste para el nuevo tamaño */
-            background: var(--amarillo-branding);
-            color: #000;
-            border: 5px solid #06113a; /* Borde más grueso para separar de la imagen */
-            width: 75px; /* MUCHO MÁS GRANDE */
-            height: 75px;
+        .live-badge {
+            background: rgba(255, 0, 68, 0.95);
+            color: #fff;
+            font-size: 0.7rem;
+            font-weight: 800;
+            padding: 5px 14px;
+            border-radius: 20px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            letter-spacing: 1.5px;
+            backdrop-filter: blur(5px);
+            box-shadow: 0 0 15px rgba(255, 0, 68, 0.6);
+            width: fit-content;
+        }
+
+        .live-dot {
+            width: 8px;
+            height: 8px;
+            background: #fff;
             border-radius: 50%;
-            font-size: 1.8rem; /* ICONO MÁS GRANDE */
+            position: relative;
+        }
+
+        .live-dot::after {
+            content: '';
+            position: absolute;
+            inset: -3px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.8);
+            animation: pulse-ring 1.5s infinite;
+        }
+
+        @keyframes pulse-ring {
+            0% { transform: scale(0.8); opacity: 1; }
+            100% { transform: scale(2.2); opacity: 0; }
+        }
+
+        .show-title-main {
+            font-size: 2.2rem;
+            font-weight: 800;
+            line-height: 1.15;
+            color: #fff;
+            text-shadow: 0 3px 12px rgba(0, 0, 0, 0.8);
+        }
+
+        .host-details {
+            font-size: 1.1rem;
+            color: rgba(255, 255, 255, 0.95);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);
+        }
+
+        .host-details i {
+            color: var(--brand-yellow);
+        }
+
+        /* CONTROLES INTEGRADOS */
+        .controls-wrapper {
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            background: rgba(1, 6, 38, 0.65);
+            backdrop-filter: blur(15px);
+            padding: 12px 20px;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            width: 100%;
+        }
+
+        .play-btn-main {
+            width: 60px;
+            height: 60px;
+            min-width: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--brand-yellow), #d4b000);
+            border: none;
+            color: var(--bg-dark);
+            font-size: 1.6rem;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 8px 25px rgba(247, 227, 0, 0.5);
-            z-index: 3;
-            transition: transform 0.2s, background-color 0.2s;
+            box-shadow: 0 0 25px var(--neon-glow);
+            transition: all 0.3s ease;
         }
 
-        .circle-play-btn:hover {
-            transform: scale(1.10) rotate(10deg);
-            background-color: var(--blanco);
+        .play-btn-main:hover {
+            transform: scale(1.08);
+            box-shadow: 0 0 35px var(--neon-glow);
         }
 
-        .meta-text h2 {
-            font-size: 1.6rem;
-            font-weight: 900;
-            letter-spacing: -0.5px;
-            line-height: 1.2;
-            text-shadow: 0 2px 10px rgba(0,0,0,0.5);
-        }
-
-        .meta-text p {
-            color: var(--amarillo-branding);
-            font-size: 0.95rem;
-            font-weight: 700;
-            margin-top: 4px;
-            letter-spacing: 0.5px;
-        }
-
-        /* --- ESPECTRO COMPACTADO EN LA BASE --- */
-        .matrix-visualizer-box {
-            position: relative;
-            width: 100%;
-            height: 60px;
-        background: rgba(4, 11, 38, 0.4);
-            border-radius: 24px;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            overflow: hidden;
-            margin-bottom: 15px;
-        }
-
-        .matrix-visualizer-box canvas {
-            position: center;
-            top: 2; left: 0; width: 100%; height: 100%;
-            pointer-events: none;
-        }
-
-        /* Control Fader */
-        .volume-container {
-            width: 100%;
-            max-width: 100%px;
+        .vol-box {
             display: flex;
             align-items: center;
-            gap: 12px;
-            color: var(--texto-muted);
-        }
-
-        .volume-slider {
+            gap: 10px;
             flex-grow: 1;
-            -webkit-appearance: none;
-            appearance: none;
-            height: 4px;
-            background: rgba(255, 255, 255, 0.1);
-            outline: none;
-            border-radius: 2px;
         }
 
-        .volume-slider::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            appearance: none;
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            background: var(--amarillo-branding);
+        .vol-box input[type="range"] {
+            width: 100%;
+            accent-color: var(--brand-yellow);
             cursor: pointer;
         }
 
-        /* --- SECCIÓN TIMELINE COMPACTO --- */
-        .timeline-section {
-            background: rgba(4, 11, 38, 0.4);
-            border: 1px solid rgba(0, 38, 230, 0.2);
-            border-radius: 30px;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            min-height: 0;
-        }
-
-        .tabs-container {
-            display: flex;
-            gap: 10px;
-            border-bottom: 2px solid rgba(0, 38, 230, 0.2);
-            padding-bottom: 8px;
-            flex-shrink: 0;
-        }
-
-        .tab-btn {
-            flex: 1;
-            background: none;
+        .btn-icon-sub {
+            background: transparent;
             border: none;
-            color: var(--texto-muted);
-            font-size: 0.8rem;
-            font-weight: 800;
-            text-transform: uppercase;
-            padding: 6px 0;
+            color: #fff;
+            font-size: 1.1rem;
             cursor: pointer;
-            position: relative;
+            opacity: 0.8;
+            transition: opacity 0.2s;
         }
 
-        .tab-btn.active { color: var(--amarillo-branding); }
+        .btn-icon-sub:hover {
+            opacity: 1;
+            color: var(--brand-yellow);
+        }
 
-        .tab-btn.active::after {
-            content: '';
+        /* ECUALIZADOR ANIMADO DE ESQUINA */
+        .equalizer-icon {
             position: absolute;
-            bottom: -10px; left: 0; width: 100%; height: 2px;
-            background: var(--amarillo-branding);
+            top: 25px;
+            right: 25px;
+            display: flex;
+            align-items: flex-end;
+            gap: 3px;
+            height: 18px;
+            z-index: 2;
+            background: rgba(0, 0, 0, 0.4);
+            padding: 6px 10px;
+            border-radius: 12px;
+            backdrop-filter: blur(5px);
         }
 
-        .playlist-wrapper {
-            display: none;
-            flex-direction: column;
+        .eq-bar {
+            width: 3px;
+            background: var(--brand-yellow);
+            border-radius: 2px;
+            animation: eqAnim 1.2s infinite ease-in-out alternate;
+        }
+
+        .eq-bar:nth-child(1) { height: 40%; animation-delay: 0.1s; }
+        .eq-bar:nth-child(2) { height: 100%; animation-delay: 0.4s; }
+        .eq-bar:nth-child(3) { height: 60%; animation-delay: 0.2s; }
+
+        @keyframes eqAnim {
+            0% { height: 20%; }
+            100% { height: 100%; }
+        }
+
+        /* PROGRAMACIÓN HORIZONTAL */
+        .schedule-box {
+            background: var(--card-bg);
+            border-radius: 24px;
+            padding: 20px;
+            border: 1px solid rgba(252, 210, 0, 0.2);
+            backdrop-filter: blur(15px);
+        }
+
+        .schedule-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
             gap: 10px;
-            margin-top: 15px;
-            overflow-y: auto;
-            flex-grow: 1;
         }
 
-        .playlist-wrapper.active { display: flex; }
+        .schedule-title {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--brand-yellow);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
 
-        .program-row {
+        .tab-pills {
+            display: flex;
+            gap: 6px;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 4px;
+            border-radius: 12px;
+        }
+
+        .pill-btn {
+            background: transparent;
+            border: none;
+            color: #fff;
+            padding: 6px 12px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .pill-btn.active {
+            background: var(--brand-blue);
+            color: var(--brand-yellow);
+        }
+
+        .cards-slider {
+            display: flex;
+            gap: 15px;
+            overflow-x: auto;
+            padding-bottom: 10px;
+            scroll-behavior: smooth;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .cards-slider::-webkit-scrollbar {
+            height: 6px;
+        }
+
+        .cards-slider::-webkit-scrollbar-thumb {
+            background: rgba(252, 210, 0, 0.3);
+            border-radius: 10px;
+        }
+
+        .prog-card-mini {
+            min-width: 160px;
+            width: 160px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .prog-card-mini.active {
+            background: rgba(0, 31, 188, 0.45);
+            border-color: var(--brand-yellow);
+            box-shadow: 0 0 15px rgba(252, 210, 0, 0.25);
+        }
+
+        .prog-card-mini img {
+            width: 100%;
+            height: 90px;
+            object-fit: cover;
+            border-radius: 10px;
+        }
+
+        .prog-card-mini h6 {
+            font-size: 0.8rem;
+            font-weight: 700;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .prog-card-mini p {
+            font-size: 0.7rem;
+            color: rgba(255, 255, 255, 0.7);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .prog-time-tag {
+            font-size: 0.65rem;
+            font-weight: 700;
+            color: var(--brand-yellow);
+        }
+
+        /* REDES SOCIALES */
+        .social-box {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 15px 20px;
+            border: 1px solid rgba(252, 210, 0, 0.15);
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 12px 14px;
-            border-radius: 12px;
-            background: rgba(0, 0, 0, 0.2);
+            flex-wrap: wrap;
+            gap: 15px;
         }
 
-        .program-row.active {
-            background: var(--azul-consola);
-            border-left: 4px solid var(--amarillo-branding);
+        .social-title {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
-        .row-left {
+        .social-title i {
+            color: var(--brand-yellow);
+        }
+
+        .social-links {
             display: flex;
             align-items: center;
             gap: 12px;
         }
 
-        .row-avatar {
-            width: 38px;
-            height: 38px;
-            border-radius: 50%;
-            object-fit: cover;
-        }
-
-        .row-details h4 { font-size: 0.95rem; font-weight: 700; }
-        .row-details p { font-size: 0.8rem; color: var(--texto-muted); }
-        .program-row.active .row-details p { color: var(--amarillo-branding); }
-
-        .row-time {
-            font-size: 0.75rem;
-            font-weight: 700;
-            color: var(--texto-muted);
-            background: rgba(255,255,255,0.04);
-            padding: 4px 8px;
-            border-radius: 4px;
-        }
-
-        .program-row.active .row-time {
-            background: var(--amarillo-branding);
-            color: #000;
-        }
-
-        footer {
-            
+        .social-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #fff;
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            font-size: 0.75rem;
-            color: var(--texto-muted);
-            padding-top: 5px;
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            justify-content: center;
+            font-size: 1.1rem;
+            text-decoration: none;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
-        .socials a { color: var(--blanco); margin-left: 12px; }
-        .socials a:hover { color: var(--amarillo-branding); }
+        .social-btn:hover {
+            transform: translateY(-4px) scale(1.1);
+            color: #fff;
+        }
 
-        /* --- AJUSTES RESPONSIVOS --- */
+        .social-btn.whatsapp:hover { background: #25D366; border-color: #25D366; box-shadow: 0 5px 15px rgba(37, 211, 102, 0.4); }
+        .social-btn.instagram:hover { background: #E1306C; border-color: #E1306C; box-shadow: 0 5px 15px rgba(225, 48, 108, 0.4); }
+        .social-btn.facebook:hover { background: #1877F2; border-color: #1877F2; box-shadow: 0 5px 15px rgba(24, 119, 242, 0.4); }
+        .social-btn.tiktok:hover { background: #000; border-color: #ff0050; box-shadow: 0 5px 15px rgba(255, 0, 80, 0.4); }
+
+        /* FOOTER */
+        .site-footer {
+            position: relative;
+            z-index: 2;
+            width: 100vw;
+            background: rgba(1, 4, 18, 0.95);
+            border-top: 1px solid rgba(252, 210, 0, 0.2);
+            padding: 15px 0;
+            text-align: center;
+            margin-top: auto;
+        }
+
+        .footer-content {
+            max-width: 850px;
+            margin: 0 auto;
+            padding: 0 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .footer-text {
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .footer-text strong {
+            color: var(--brand-yellow);
+        }
+
+        .footer-copy {
+            font-size: 0.7rem;
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        /* RESPONSIVE EN MÓVILES */
         @media (max-width: 768px) {
-            
-            /* Logo más grande en móvil también */
-            .header-logo img {
-                max-height: 150px; 
-            }
-            
-            .dashboard-content {
-                grid-template-columns: 1fr;
-                grid-template-rows: 1.4fr 1fr;
-                gap: 12px;
+            #bgCanvas {
+                display: none !important;
             }
 
-            .vertical-player-card { padding: 5px; }
+            .logo-img {
+                max-width: 320px;
+                width: 85%;
+            }
 
-            .show-info-deck {
-                flex-direction: row;
-                text-align: left;
+            .onair-card {
+                min-height: 580px;
+                padding: 20px;
+            }
+
+            .info-container {
+                align-items: center;
+                text-align: center;
+            }
+
+            .host-details {
                 justify-content: center;
-                gap: 25px;
             }
 
-            .avatar-wrapper {
-                width: 150px;
-                height:150px;
+            .show-title-main {
+                font-size: 1.7rem;
             }
 
-            .avatar-main { border-radius: 80px; }
-
-            /* Play masivo adaptado a móvil */
-            .circle-play-btn {
-                width: 60px; /* Más grande en móvil (era 40px) */
-                height: 60px;
-                font-size: 1.4rem;
-                bottom: -12px; 
-                right: -12px;
-                border-width: 4px; /* Borde visible en móvil */
+            .social-box {
+                flex-direction: column;
+                text-align: center;
+                justify-content: center;
             }
 
-            .meta-text h2 { font-size: 1.3rem; }
-            .matrix-visualizer-box { height: 50px; }
+            .schedule-nav {
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .logo-img {
+                max-width: 290px;
+                width: 90%;
+            }
+
+            .controls-wrapper {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .vol-box {
+                width: 100%;
+                order: 2;
+            }
         }
     </style>
 </head>
 <body>
 
-    <div class="app-layout">
-        <div class="header-logo">
+    <canvas id="bgCanvas"></canvas>
+
+    <div class="player-container">
+        <!-- HEADER -->
+        <header class="brand-header">
             <img src="/img/logo-header.png" alt="Zulianísima 100.3 FM">
+        </header>
 
-        </div>
+    
+        <section class="onair-card">
+          
+            <img id="currentPhoto" src="" alt="Programa en Emisión" class="cover-background">
+            <div class="cover-gradient-overlay"></div>
 
-        <div class="dashboard-content">
-            
-            <section class="vertical-player-card">
-                <div class="deck-top">
-                  <div class="deck-top">
-                      
-                    <span style="font-size: 0.75rem; font-weight: 00; color: var(--texto-muted);"></span>
-                    <div class="live-tag">AL AIRE</div>
-                </div>
-                </div>
-
-                <div class="show-info-deck">
-                    <div class="avatar-wrapper" id="playerAvatarNode">
-                        <img id="currentLocutorPhoto" src="logo.jpg" alt="Locutor" class="avatar-main">
-                        <button class="circle-play-btn" id="playBtn" onclick="togglePlayback()">
-                            <i class="fas fa-play" id="playIcon" style="margin-left: 4px;"></i> </button>
-                    </div>
-                    <div class="meta-text">
-                        <h2 id="currentShowTitle">Cargando Emisión...</h2>
-                        <p id="currentHost">Zulianísima Radio</p>
-                    </div>
-                </div>
-
-                <div class="matrix-visualizer-box">
-                    <canvas id="matrixVisualizer"></canvas>
-                </div>
-
-                <div class="volume-container">
-                    <i class="fas fa-volume-down" id="volIcon"></i>
-                    <input type="range" class="volume-slider" id="volumeControl" min="0" max="1" step="0.05" value="1" oninput="changeVolume(this.value)">
-                </div>
-
-                <audio id="radioStream" src="https://stream-177.surfernetwork.com/m7z6zdlqlrkuv" crossorigin="anonymous"></audio>
-            </section>
-
-     <!-- Derecha: Parrilla de Programación Inteligente -->
-            <section class="timeline-section">
-                <div class="tabs-container">
-                    <button class="tab-btn" id="btn-semana" onclick="switchTab('semana')">Lunes a Viernes</button>
-                    <button class="tab-btn" id="btn-finde" onclick="switchTab('finde')">Fin de Semana</button>
-                </div>
-
-                <!-- LUNES A VIERNES -->
-                <div class="playlist-wrapper" id="wrapper-semana">
-                    <div class="program-row" id="card-amaneciendo">
-                        <div class="row-left">
-                            <img src="" class="row-avatar">
-                            <div class="row-details">
-                                <h4>Amaneciendo con Dios</h4>
-                                <p></p>
-                            </div>
-                        </div>
-                        <span class="row-time">05:00 AM</span>
-                    </div>
-                    <div class="program-row" id="card-mananero">
-                        <div class="row-left">
-                            <img src="" class="row-avatar">
-                            <div class="row-details">
-                                <h4>Cabimas en sintonia</h4>
-                                <p>con Freddy Gomez</p>
-                            </div>
-                        </div>
-                        <span class="row-time">07:00 AM</span>
-                    </div>
-                    <div class="program-row" id="card-gaitas">
-                        <div class="row-left">
-                            <img src="" class="row-avatar">
-                            <div class="row-details">
-                                <h4>La Plataforma</h4>
-                                <p>con Rafael Alvarez</p>
-                            </div>
-                        </div>
-                        <span class="row-time">8:00 AM</span>
-                    </div>
-                    <div class="program-row" id="card-manana">
-                        <div class="row-left">
-                            <img src="" class="row-avatar">
-                            <div class="row-details">
-                                <h4>La Mañana Zuliana</h4>
-                                <p>con Israel Cordero</p>
-                            </div>
-                        </div>
-                        <span class="row-time">10:00 AM</span>
-                    </div>
-                    <div class="program-row" id="card-noticia">
-                        <div class="row-left">
-                            <img src="" class="row-avatar">
-                            <div class="row-details">
-                                <h4>XQ`es Noticia</h4>
-                                <p>Claro y Raspao</p>
-                            </div>
-                        </div>
-                        <span class="row-time">12:00 PM</span>
-                    </div>
-                    <div class="program-row" id="card-frente">
-                        <div class="row-left">
-                            <img src="" class="row-avatar">
-                            <div class="row-details">
-                                <h4>Especiales</h4>
-                                <p>Frente a Frente</p>
-                            </div>
-                        </div>
-                        <span class="row-time">1:00 PM</span>
-                    </div>
-                       <div class="program-row" id="card-vallenato">
-                        <div class="row-left">
-                            <img src="" class="row-avatar">
-                            <div class="row-details">
-                                <h4>La Fiesta dek Gran Vallenato</h4>
-                                <p>con Kelvin Quintero</p>
-                            </div>
-                        </div>
-                        <span class="row-time">2:00 PM</span>
-                    </div>
-                    <div class="program-row" id="card-guaguanco">
-                        <div class="row-left">
-                            <img src="" class="row-avatar">
-                            <div class="row-details">
-                                <h4>Las Gaitas que el pueblo quiere</h4>
-                                <p>con Albenis Barroso</p>
-                            </div>
-                        </div>
-                        <span class="row-time">4:00 PM</span>
-                    </div>
-                     <div class="program-row" id="card-papacho">
-                        <div class="row-left">
-                            <img src="" class="row-avatar">
-                            <div class="row-details">
-                                <h4>El Show del Papacho</h4>
-                                <p>con Manuel Rojas</p>
-                            </div>
-                        </div>
-                        <span class="row-time">6:00 PM</span>
-                    </div>
-                </div>
-
-                <!-- FIN DE SEMANA -->
-                <div class="playlist-wrapper" id="wrapper-finde">
-                    <div class="program-row" id="card-palabra">
-                        <div class="row-left">
-                            <img src="" class="row-avatar">
-                            <div class="row-details">
-                                <h4>Palabra de Gracia</h4>
-                                <p></p>
-                            </div>
-                        </div>
-                        <span class="row-time">06:00 AM</span>
-                    </div>
-                    <div class="program-row" id="card-cafe">
-                        <div class="row-left">
-                            <img src="" class="row-avatar">
-                            <div class="row-details">
-                                <h4>Café con Llano</h4>
-                                <p>con Gladys Garcés</p>
-                            </div>
-                        </div>
-                        <span class="row-time">8:00 AM</span>
-                    </div>
-                    <div class="program-row" id="card-bailando">
-                        <div class="row-left">
-                            <img src="" class="row-avatar">
-                            <div class="row-details">
-                                <h4>Bailando con Jesus y Geonardo</h4>
-                                <p>Con Jesus Castellanos y Geonardo Garces</p>
-                            </div>
-                        </div>
-                        <span class="row-time">10:00 AM</span>
-                    </div>
-                    <div class="program-row" id="card-provecho">
-                        <div class="row-left">
-                            <img src="" class="row-avatar">
-                            <div class="row-details">
-                                <h4>Buen Provecho Musical</h4>
-                                <p>Con Jorge Acosta</p>
-                            </div>
-                        </div>
-                        <span class="row-time">12:00 PM</span>
-                    </div>
-                </div>
-            </section>
-
-        </div>
-        
-        <!-- Footer Reducido -->
-        <footer>
-            <p>&copy; 2026 Zulianísima FM- powered by ACMEDIA</p>
-            <div class="socials">
-                <a href="#"><i class="fab fa-instagram"></i></a>
-                <a href="#"><i class="fab fa-whatsapp"></i></a>
+            <div class="equalizer-icon">
+                <div class="eq-bar"></div>
+                <div class="eq-bar"></div>
+                <div class="eq-bar"></div>
             </div>
-        </footer>
+
+            <div class="info-container">
+                <div class="live-badge"><div class="live-dot"></div> EN VIVO</div>
+                
+                <h2 class="show-title-main" id="currentShow">Cargando Emisión...</h2>
+                <div class="host-details">
+                    <i class="fas fa-microphone-alt"></i>
+                    <span id="currentHost">Zulianísima 100.3 FM</span>
+                </div>
+
+                <!-- CONTROLES SOBRE EL DEGRADADO -->
+                <div class="controls-wrapper">
+                    <button class="play-btn-main" onclick="togglePlayback()">
+                        <i class="fas fa-play" id="playIcon"></i>
+                    </button>
+
+                    <div class="vol-box">
+                        <i class="fas fa-volume-down" style="color: var(--brand-yellow);"></i>
+                        <input type="range" id="volumeSlider" min="0" max="1" step="0.05" value="1" oninput="setVolume(this.value)">
+                        <i class="fas fa-volume-up" style="color: var(--brand-yellow);"></i>
+                    </div>
+
+                    <button class="btn-icon-sub" onclick="reloadStream()" title="Reconectar"><i class="fas fa-sync-alt"></i></button>
+                    <button class="btn-icon-sub" onclick="toggleMute()" title="Silenciar"><i id="muteIcon" class="fas fa-volume-up"></i></button>
+                </div>
+            </div>
+        </section>
+
+        <!-- PROGRAMACIÓN -->
+        <section class="schedule-box">
+            <div class="schedule-nav">
+                <div class="schedule-title">
+                    <i class="fas fa-calendar-alt"></i> Programación
+                </div>
+                <div class="tab-pills">
+                    <button class="pill-btn active" id="pillSemana" onclick="selectTab('semana')">Lunes a Viernes</button>
+                    <button class="pill-btn" id="pillFinde" onclick="selectTab('finde')">Fin de Semana</button>
+                </div>
+            </div>
+
+            <div class="cards-slider" id="sliderSemana"></div>
+            <div class="cards-slider" id="sliderFinde" style="display: none;"></div>
+        </section>
+
+        <!-- REDES SOCIALES -->
+        <section class="social-box">
+            <div class="social-title">
+                <i class="fas fa-share-alt"></i> ¡Conéctate con nosotros!
+            </div>
+            <div class="social-links">
+                <a href="https://wa.me/" target="_blank" class="social-btn whatsapp" title="WhatsApp Cabina"><i class="fab fa-whatsapp"></i></a>
+                <a href="https://instagram.com/" target="_blank" class="social-btn instagram" title="Instagram"><i class="fab fa-instagram"></i></a>
+                <a href="https://facebook.com/" target="_blank" class="social-btn facebook" title="Facebook"><i class="fab fa-facebook-f"></i></a>
+                <a href="https://tiktok.com/" target="_blank" class="social-btn tiktok" title="TikTok"><i class="fab fa-tiktok"></i></a>
+            </div>
+        </section>
     </div>
 
+    <!-- FOOTER -->
+    <footer class="site-footer">
+        <div class="footer-content">
+            <p class="footer-text"><strong>¡Tan Zuliana Como Vos!</strong></p>
+            <p class="footer-text"><i class="fas fa-map-marker-alt" style="color: var(--brand-yellow);"></i> Cabimas, Estado Zulia - Venezuela</p>
+            <p class="footer-copy">&copy; 2026 Zulianísima 100.3 FM - Desig by AC MEDIA BROADCAST</p>
+        </div>
+    </footer>
 
-   <script>
+    <audio id="audioStream" src="https://stream-177.surfernetwork.com/m7z6zdlqlrkuv" crossorigin="anonymous"></audio>
+
+    <script>
         const progSemana = [
-            { id: "card-amaneciendo", inicio: 4, fin: 7, titulo: "Amaneciendo con Dios", locutor: "", foto: "https://images.unsplash.com/photo-1617610881975-8e524774ab45?q=80&w=870&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" },
-            { id: "card-mananero", inicio: 7, fin: 8, titulo: "Cabimas en sintonía", locutor: "Con Freddy Gomez", foto: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRavlFDe0i48Hgm_Z8178XafWyOAqyzzV9-0v2RCV0nYUfT072pdrWSy89c&s=10" },
-            { id: "card-gaitas", inicio: 8, fin: 10, titulo: "La Plataforma", locutor: "con Rafael Alvarez", foto: "https://cdn.phototourl.com/free/2026-08-02-d4438a84-cfe9-4c11-b1e8-f895510966f7.jpg" },
-            { id: "card-manana", inicio: 10, fin: 12, titulo: "La Mañana Zuliana", locutor: "con Israel Cordero", foto: "https://cdn.phototourl.com/free/2026-07-11-cd128f3e-7960-4a51-be1c-86d04c1ccab7.jpg" },
-            { id: "card-noticia", inicio: 12, fin: 13, titulo: "XQ`es noticia", locutor: "emisión meridiana", foto: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRZVmfsspRQbVDa_YvWl4gDeHgFyVDn6L-c85Rku94W7w&s=100" },
-                  { id: "card-frente", inicio: 13, fin: 14, titulo: "Especiales", locutor: "Frente a Frente", foto: "https://cdn.phototourl.com/free/2026-07-11-c4d8b76e-d8cc-4a76-be0e-000aa7c717bf.jpg" },
-            { id: "card-vallenato", inicio: 14, fin: 16, titulo: "La Fiesta del Gran Vallenato", locutor: "con Kelvin Quintero", foto: "https://cdn.phototourl.com/free/2026-08-10-d6aa85e1-3667-4f42-a830-acbfdd99e7bf.jpg" },
-                  { id: "card-guaguanco", inicio: 16, fin: 18, titulo: "Las Gaitas que el pueblo quiere", locutor: "con Albenis Barroso", foto: "https://cdn.phototourl.com/free/2026-07-11-d26838cb-1380-44ba-b9a0-208233144a8a.jpg" },
-                  { id: "card-papacho", inicio: 18, fin: 20, titulo: "El Show del Papacho", locutor: "con Manuel Rojas", foto: "https://cdn.phototourl.com/free/2026-07-11-c1e52c21-3cb2-4bb4-86ec-2ba7bcedce61.jpg" }
+            { id: "card-amaneciendo", inicio: 5, fin: 7, titulo: "Amaneciendo con Dios", locutor: "Programa Religioso", foto: "https://images.unsplash.com/photo-1617610881975-8e524774ab45?q=80&w=870&auto=format&fit=crop" },
+            { id: "card-mananero", inicio: 7, fin: 8, titulo: "Cabimas en sintonía", locutor: "Freddy Gomez", foto: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRavlFDe0i48Hgm_Z8178XafWyOAqyzzV9-0v2RCV0nYUfT072pdrWSy89c&s=10" },
+            { id: "card-gaitas", inicio: 8, fin: 10, titulo: "La Plataforma", locutor: "Rafael Alvarez", foto: "https://cdn.phototourl.com/free/2026-08-02-d4438a84-cfe9-4c11-b1e8-f895510966f7.jpg" },
+            { id: "card-manana", inicio: 10, fin: 12, titulo: "La Mañana Zuliana", locutor: "Israel Cordero", foto: "https://cdn.phototourl.com/free/2026-07-11-cd128f3e-7960-4a51-be1c-86d04c1ccab7.jpg" },
+            { id: "card-noticia", inicio: 12, fin: 13, titulo: "XQ`es noticia", locutor: "Claro y Raspao", foto: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRZVmfsspRQbVDa_YvWl4gDeHgFyVDn6L-c85Rku94W7w&s=100" },
+            { id: "card-frente", inicio: 13, fin: 14, titulo: "Especiales", locutor: "Frente a Frente", foto: "https://cdn.phototourl.com/free/2026-07-11-c4d8b76e-d8cc-4a76-be0e-000aa7c717bf.jpg" },
+            { id: "card-vallenato", inicio: 14, fin: 16, titulo: "La Fiesta del Gran Vallenato", locutor: "Kelvin Quintero", foto: "https://cdn.phototourl.com/free/2026-08-10-d6aa85e1-3667-4f42-a830-acbfdd99e7bf.jpg" },
+            { id: "card-guaguanco", inicio: 16, fin: 18, titulo: "Las Gaitas que el pueblo quiere", locutor: "Albenis Barroso", foto: "https://cdn.phototourl.com/free/2026-07-11-d26838cb-1380-44ba-b9a0-208233144a8a.jpg" },
+            { id: "card-papacho", inicio: 18, fin: 20, titulo: "El Show del Papacho", locutor: "Manuel Rojas", foto: "https://cdn.phototourl.com/free/2026-07-11-c1e52c21-3cb2-4bb4-86ec-2ba7bcedce61.jpg" }
         ];
+
         const progFinde = [
-            { id: "card-palabra", inicio: 6, fin: 7, titulo: "Palabra de Gracia", locutor: "", foto: "https://i.scdn.co/image/ab6765630000ba8a29c0c858645ae9685fb45f55" },
-            { id: "card-cafe", inicio: 8, fin: 10, titulo: "Café con Llano", locutor: "con Gladys Garcés", foto: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSiiMCkKV22xm-LHd5VIokIjWq1rLkazN8nc_Bse3sSSA&s=10" },
-            { id: "card-bailando", inicio: 10, fin: 12, titulo: "Bailando con Jesus y Geo", locutor: "Con Jesus castellano y Geonardo Garces", foto: "https://cdn.phototourl.com/free/2026-07-11-0178fa58-f155-4297-9a2f-975af1c38a1e.jpg" },
-             { id: "card-provecho", inicio: 12, fin: 14, titulo: "Buen Provecho Musical", locutor: "Con Jorge Acosta", foto: "https://cdn.phototourl.com/free/2026-07-11-f8c33167-d3c8-4862-9f1c-bd3e8f531734.jpg" }
+            { id: "card-palabra", inicio: 6, fin: 7, titulo: "Palabra de Gracia", locutor: "Programa Espiritual", foto: "https://i.scdn.co/image/ab6765630000ba8a29c0c858645ae9685fb45f55" },
+            { id: "card-cafe", inicio: 8, fin: 10, titulo: "Café con Llano", locutor: "Gladys Garcés", foto: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSiiMCkKV22xm-LHd5VIokIjWq1rLkazN8nc_Bse3sSSA&s=10" },
+            { id: "card-bailando", inicio: 10, fin: 12, titulo: "Bailando con Jesus y Geo", locutor: "Jesus Castellanos & Geo Garcés", foto: "https://cdn.phototourl.com/free/2026-07-11-0178fa58-f155-4297-9a2f-975af1c38a1e.jpg" },
+            { id: "card-provecho", inicio: 12, fin: 14, titulo: "Buen Provecho Musical", locutor: "Jorge Acosta", foto: "https://cdn.phototourl.com/free/2026-07-11-f8c33167-d3c8-4862-9f1c-bd3e8f531734.jpg" }
         ];
 
-// Objeto por defecto cuando no hay programa al aire o es feriado
-const porDefecto = { 
-    id: null, 
-    titulo: "Zulianisima 100.3 FM", 
-    locutor: "PROGRAMACION 24/7", 
-    foto: "https://cdn.phototourl.com/free/2026-07-11-bc942ae5-cb08-45f9-8367-c19d578302ff.jpg" 
-};
+        const porDefecto = { titulo: "Zulianísima 100.3 FM", locutor: "¡Tan Zuliana Como Vos!", foto: "https://cdn.phototourl.com/free/2026-07-11-bc942ae5-cb08-45f9-8367-c19d578302ff.jpg" };
 
-// 1. Feriados Fijos Nacionales de Venezuela ("MM-DD")
-const feriadosFijosVE = [
-    "01-01", // Año Nuevo
-    "04-19", // Proclamación de la Independencia
-    "05-01", // Día del Trabajador
-    "06-24", // Batalla de Carabobo
-    "07-05", // Día de la Independencia
-    "07-24", // Natalicio del Libertador
-    "10-12", // Día de la Resistencia Indígena
-    "12-24", // Víspera de Navidad
-    "12-25", // Navidad
-    "12-31"  // Fin de Año
-];
+        function renderCards() {
+            const containerSemana = document.getElementById('sliderSemana');
+            const containerFinde = document.getElementById('sliderFinde');
 
-// 2. Feriados Variables / Móviles ("YYYY-MM-DD")
-const feriadosVariablesVE = [
-    // 2026
-    "2026-02-16", "2026-02-17", // Carnaval
-    "2026-04-02", "2026-04-03", // Semana Santa
-    // 2027
-    "2027-02-08", "2027-02-09", // Carnaval
-    "2027-03-25", "2027-03-26"  // Semana Santa
-];
+            containerSemana.innerHTML = progSemana.map(p => `
+                <div class="prog-card-mini" id="${p.id}">
+                    <img src="${p.foto}" alt="${p.titulo}">
+                    <span class="prog-time-tag">${p.inicio}:00 - ${p.fin}:00</span>
+                    <h6>${p.titulo}</h6>
+                    <p>${p.locutor}</p>
+                </div>
+            `).join('');
 
-// Función para verificar si la fecha actual es feriado en Venezuela
-function esFeriadoVenezuela(fecha) {
-    const mes = String(fecha.getMonth() + 1).padStart(2, '0');
-    const dia = String(fecha.getDate()).padStart(2, '0');
-    const anio = fecha.getFullYear();
-
-    const fechaCorta = `${mes}-${dia}`;
-    const fechaCompleta = `${anio}-${mes}-${dia}`;
-
-    return feriadosFijosVE.includes(fechaCorta) || feriadosVariablesVE.includes(fechaCompleta);
-}
-
-// Inicializar fotos de avatares en las listas
-function inicializarAvatares() {
-    if (typeof progSemana !== 'undefined') {
-        progSemana.forEach(p => {
-            const el = document.getElementById(p.id)?.querySelector('.row-avatar');
-            if (el) el.src = p.foto;
-        });
-    }
-    if (typeof progFinde !== 'undefined') {
-        progFinde.forEach(p => {
-            const el = document.getElementById(p.id)?.querySelector('.row-avatar');
-            if (el) el.src = p.foto;
-        });
-    }
-}
-
-// Cambio de pestañas entre semana y fin de semana
-function switchTab(type) {
-    const esSemana = type === 'semana';
-
-    document.getElementById('btn-semana')?.classList.toggle('active', esSemana);
-    document.getElementById('wrapper-semana')?.classList.toggle('active', esSemana);
-    
-    document.getElementById('btn-finde')?.classList.toggle('active', !esSemana);
-    document.getElementById('wrapper-finde')?.classList.toggle('active', !esSemana);
-}
-
-// Sincronizador principal de la emisora
-function sincronizarEmisora() {
-    // Obtener fecha y hora exacta en Caracas (Venezuela)
-    const fechaVenezuela = new Date().toLocaleString("en-US", { timeZone: "America/Caracas" });
-    const ahora = new Date(fechaVenezuela);
-    
-    const horaActual = ahora.getHours();
-    const diaSemana = ahora.getDay(); // 0 = Domingo, 6 = Sábado
-    
-    const esFinDeSemana = (diaSemana === 0 || diaSemana === 6);
-    const esFeriado = esFeriadoVenezuela(ahora);
-
-    // Control de inicio de pestañas (solo la primera vez)
-    if (!window.tabIniciada) {
-        switchTab(esFinDeSemana ? 'finde' : 'semana');
-        window.tabIniciada = true;
-    }
-
-    // Limpiar marcas activas en ambas listas
-    if (typeof progSemana !== 'undefined' && typeof progFinde !== 'undefined') {
-        [...progSemana, ...progFinde].forEach(p => {
-            document.getElementById(p.id)?.classList.remove('active');
-        });
-    }
-
-    let programaActual = porDefecto;
-
-    // Solo busca en la parrilla si NO es un día feriado
-    if (!esFeriado) {
-        const parrillaActiva = esFinDeSemana ? progFinde : progSemana;
-
-        parrillaActiva.forEach(p => {
-            // Soporta horarios normales (ej. 14 a 18) y nocturnos que cruzan la medianoche (ej. 22 a 02)
-            const esNocturno = p.inicio > p.fin;
-            const enHorario = esNocturno 
-                ? (horaActual >= p.inicio || horaActual < p.fin)
-                : (horaActual >= p.inicio && horaActual < p.fin);
-
-            if (enHorario) {
-                programaActual = p;
-                const element = document.getElementById(p.id);
-                if (element) element.classList.add('active');
-            }
-        });
-    }
-
-    // Actualizar la interfaz principal
-    const elTitulo = document.getElementById('currentShowTitle');
-    const elLocutor = document.getElementById('currentHost');
-    const elFoto = document.getElementById('currentLocutorPhoto');
-
-    if (elTitulo) elTitulo.innerText = programaActual.titulo;
-    if (elLocutor) elLocutor.innerText = programaActual.locutor;
-    if (elFoto) elFoto.src = programaActual.foto;
-}
-
-// Ejecución segura una vez cargado el DOM
-document.addEventListener('DOMContentLoaded', () => {
-    inicializarAvatares();
-    sincronizarEmisora();
-    setInterval(sincronizarEmisora, 30000); // Revisa cada 30 segundos
-});
-
-        // --- ENGINE DEL ESPECTRO ---
-        const audio = document.getElementById('radioStream');
-        const playIcon = document.getElementById('playIcon');
-        const canvas = document.getElementById('matrixVisualizer');
-        const canvasCtx = canvas.getContext('2d');
-        const avatarNode = document.getElementById('playerAvatarNode');
-
-        let audioCtx, audioSource, analyser, dataArray, bufferLength;
-        let isInit = false;
-        let peaks = [];
-
-        function resizeCanvas() {
-            canvas.width = canvas.parentElement.clientWidth;
-            canvas.height = canvas.parentElement.clientHeight;
+            containerFinde.innerHTML = progFinde.map(p => `
+                <div class="prog-card-mini" id="${p.id}">
+                    <img src="${p.foto}" alt="${p.titulo}">
+                    <span class="prog-time-tag">${p.inicio}:00 - ${p.fin}:00</span>
+                    <h6>${p.titulo}</h6>
+                    <p>${p.locutor}</p>
+                </div>
+            `).join('');
         }
-        window.addEventListener('resize', resizeCanvas);
-        resizeCanvas();
+
+        function selectTab(tab) {
+            const isSemana = tab === 'semana';
+            document.getElementById('pillSemana').classList.toggle('active', isSemana);
+            document.getElementById('pillFinde').classList.toggle('active', !isSemana);
+            document.getElementById('sliderSemana').style.display = isSemana ? 'flex' : 'none';
+            document.getElementById('sliderFinde').style.display = !isSemana ? 'flex' : 'none';
+        }
+
+        function syncPlayer() {
+            const ahora = new Date(new Date().toLocaleString("en-US", { timeZone: "America/Caracas" }));
+            const hora = ahora.getHours();
+            const dia = ahora.getDay();
+            const esFinde = (dia === 0 || dia === 6);
+
+            if (!window.tabSet) {
+                selectTab(esFinde ? 'finde' : 'semana');
+                window.tabSet = true;
+            }
+
+            [...progSemana, ...progFinde].forEach(p => {
+                const el = document.getElementById(p.id);
+                if (el) el.classList.remove('active');
+            });
+
+            let activo = porDefecto;
+            const lista = esFinde ? progFinde : progSemana;
+
+            lista.forEach(p => {
+                if (hora >= p.inicio && hora < p.fin) {
+                    activo = p;
+                    const el = document.getElementById(p.id);
+                    if (el) el.classList.add('active');
+                }
+            });
+
+            document.getElementById('currentShow').innerText = activo.titulo;
+            document.getElementById('currentHost').innerText = activo.locutor;
+            document.getElementById('currentPhoto').src = activo.foto;
+        }
+
+        const audio = document.getElementById('audioStream');
+        const playIcon = document.getElementById('playIcon');
+        let audioCtx, analyser, dataArray, isAudioInit = false;
 
         function initAudio() {
-            if (isInit) return;
+            if (isAudioInit) return;
             audioCtx = new (window.AudioContext || window.webkitAudioContext)();
             analyser = audioCtx.createAnalyser();
-            audioSource = audioCtx.createMediaElementSource(audio);
-            audioSource.connect(analyser);
+            const source = audioCtx.createMediaElementSource(audio);
+            source.connect(analyser);
             analyser.connect(audioCtx.destination);
-            analyser.fftSize = 64; 
-            bufferLength = analyser.frequencyBinCount;
-            dataArray = new Uint8Array(bufferLength);
-            isInit = true;
+            analyser.fftSize = 64;
+            dataArray = new Uint8Array(analyser.frequencyBinCount);
+            isAudioInit = true;
         }
-
-        function renderMatrix() {
-            requestAnimationFrame(renderMatrix);
-            canvasCtx.clearRect(0, 0, canvas.width, canvas.height);
-
-            const numBars = 24; 
-            const barWidth = Math.floor(canvas.width / numBars) - 3;
-            const blockHeight = 3; 
-            const blockGap = 2;   
-            const maxBlocks = Math.floor(canvas.height / (blockHeight + blockGap)) - 1;
-            const startX = (canvas.width - (numBars * (barWidth + 3))) / 2;
-
-            if (!isInit || audio.paused) {
-                avatarNode.style.transform = "scale(1)";
-                for (let i = 0; i < numBars; i++) {
-                    const x = startX + i * (barWidth + 3);
-                    canvasCtx.fillStyle = 'rgba(0, 38, 230, 0.1)';
-                    canvasCtx.fillRect(x, canvas.height - blockHeight - 2, barWidth, blockHeight);
-                }
-                return;
-            }
-
-            analyser.getByteFrequencyData(dataArray);
-
-            // Efecto Pulse sutil en la carátula según bajos
-            let bassSum = dataArray[0] + dataArray[1] + dataArray[2];
-            let pulseScale = 1 + (bassSum / 765) * 0.06;
-            avatarNode.style.transform = `scale(${pulseScale})`;
-
-            for (let i = 0; i < numBars; i++) {
-                const dataIndex = Math.abs(i - Math.floor(numBars / 2)) * 2;
-                const rawValue = dataArray[dataIndex] || 0;
-                let activeBlocks = Math.floor((rawValue / 255) * maxBlocks);
-
-                const x = startX + i * (barWidth + 1);
-
-                if (peaks[i] === undefined || activeBlocks > peaks[i]) {
-                    peaks[i] = activeBlocks;
-                } else if (peaks[i] > 0) {
-                    peaks[i] -= 0.2;
-                }
-
-                for (let b = 0; b < activeBlocks; b++) {
-                    const y = canvas.height - 2 - b * (blockHeight + blockGap);
-                    let blockPercent = b / maxBlocks;
-                    
-                    if (blockPercent < 0.6) canvasCtx.fillStyle = '#0026e6';
-                    else if (blockPercent < 0.85) canvasCtx.fillStyle = '#0066ff';
-                    else canvasCtx.fillStyle = '#f7e300';
-
-                    canvasCtx.fillRect(x, y, barWidth, blockHeight);
-                }
-            }
-        }
-
-        renderMatrix();
 
         function togglePlayback() {
             initAudio();
@@ -860,24 +786,66 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (audio.paused) {
                 audio.load();
-                audio.play().then(() => {
-                    playIcon.className = 'fas fa-pause';
-                    playIcon.style.marginLeft = '0'; // Ajuste óptico de icono pausa
-                }).catch(err => console.log("Stream offline"));
+                audio.play().then(() => playIcon.className = 'fas fa-pause');
             } else {
                 audio.pause();
                 playIcon.className = 'fas fa-play';
-                playIcon.style.marginLeft = '4px'; // Ajuste óptico de icono play
             }
         }
 
-        function changeVolume(val) {
-            audio.volume = val;
-            const volIcon = document.getElementById('volIcon');
-            if(val == 0) volIcon.className = 'fas fa-volume-mute';
-            else if(val < 0.5) volIcon.className = 'fas fa-volume-down';
-            else volIcon.className = 'fas fa-volume-up';
+        function setVolume(v) { audio.volume = v; }
+        function reloadStream() { audio.load(); if(!audio.paused) audio.play(); }
+        function toggleMute() {
+            audio.muted = !audio.muted;
+            document.getElementById('muteIcon').className = audio.muted ? 'fas fa-volume-mute' : 'fas fa-volume-up';
         }
+
+        const canvas = document.getElementById('bgCanvas');
+        const ctx = canvas.getContext('2d');
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        let waveOffset = 0;
+        function renderCanvas() {
+            requestAnimationFrame(renderCanvas);
+            
+            if (window.innerWidth <= 768) return;
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            let intensity = 15;
+            if (isAudioInit && !audio.paused) {
+                analyser.getByteFrequencyData(dataArray);
+                let avg = 0;
+                for (let i = 0; i < dataArray.length; i++) avg += dataArray[i];
+                intensity = (avg / dataArray.length) * 0.8 + 10;
+            }
+
+            ctx.beginPath();
+            ctx.lineWidth = 3;
+            ctx.strokeStyle = 'rgba(252, 210, 0, 0.3)';
+
+            for (let x = 0; x < canvas.width; x += 10) {
+                const y = canvas.height / 2 + Math.sin((x + waveOffset) * 0.005) * intensity * Math.cos(x * 0.002);
+                if (x === 0) ctx.moveTo(x, y);
+                else ctx.lineTo(x, y);
+            }
+            ctx.stroke();
+
+            waveOffset += 2;
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            renderCards();
+            syncPlayer();
+            renderCanvas();
+            setInterval(syncPlayer, 30000);
+        });
     </script>
 </body>
 </html>
